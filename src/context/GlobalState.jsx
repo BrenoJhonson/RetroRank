@@ -1,4 +1,5 @@
 import { createContext, useState } from 'react'
+import * as api from '../services/api'
 
 export const GlobalContext = createContext()
 
@@ -8,6 +9,145 @@ export const GlobalState = ({ children }) => {
   const [comments, setComments] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
+
+  // Função de Login
+  const login = async (body) => {
+    setIsLoading(true)
+    setError(null)
+    try {
+      const response = await api.login(body)
+      localStorage.setItem('token', response.token)
+      setIsLoading(false)
+      return response
+    } catch (err) {
+      setError(err.message)
+      setIsLoading(false)
+      throw err
+    }
+  }
+
+  // Função de Cadastro
+  const signup = async (body) => {
+    setIsLoading(true)
+    setError(null)
+    try {
+      const response = await api.signup(body)
+      localStorage.setItem('token', response.token)
+      setIsLoading(false)
+      return response
+    } catch (err) {
+      setError(err.message)
+      setIsLoading(false)
+      throw err
+    }
+  }
+
+  // Função para buscar todos os posts
+  const getPosts = async () => {
+    setIsLoading(true)
+    setError(null)
+    try {
+      const response = await api.getPosts()
+      setPosts(response)
+      setIsLoading(false)
+      return response
+    } catch (err) {
+      setError(err.message)
+      setIsLoading(false)
+      throw err
+    }
+  }
+
+  // Função para criar um novo post
+  const createPost = async (body) => {
+    setIsLoading(true)
+    setError(null)
+    try {
+      const response = await api.createPost(body)
+      setPosts([response, ...posts])
+      setIsLoading(false)
+      return response
+    } catch (err) {
+      setError(err.message)
+      setIsLoading(false)
+      throw err
+    }
+  }
+
+  // Função para buscar detalhes de um post
+  const getPostById = async (id) => {
+    setIsLoading(true)
+    setError(null)
+    try {
+      const response = await api.getPostById(id)
+      setPostDetails(response)
+      setIsLoading(false)
+      return response
+    } catch (err) {
+      setError(err.message)
+      setIsLoading(false)
+      throw err
+    }
+  }
+
+  // Função para buscar comentários de um post
+  const getComments = async (postId) => {
+    setIsLoading(true)
+    setError(null)
+    try {
+      const response = await api.getComments(postId)
+      setComments(response)
+      setIsLoading(false)
+      return response
+    } catch (err) {
+      setError(err.message)
+      setIsLoading(false)
+      throw err
+    }
+  }
+
+  // Função para criar um comentário
+  const createComment = async (postId, body) => {
+    setIsLoading(true)
+    setError(null)
+    try {
+      const response = await api.createComment(postId, body)
+      setComments([...comments, response])
+      setIsLoading(false)
+      return response
+    } catch (err) {
+      setError(err.message)
+      setIsLoading(false)
+      throw err
+    }
+  }
+
+  // Função para dar like em um post
+  const likePost = async (postId, isLike) => {
+    setIsLoading(true)
+    setError(null)
+    try {
+      const response = await api.likePost(postId, isLike)
+      // Atualiza o post na lista de posts
+      const updatedPosts = posts.map(post => {
+        if (post.id === postId) {
+          return response
+        }
+        return post
+      })
+      setPosts(updatedPosts)
+      // Atualiza também o postDetails se estiver visualizando
+      if (postDetails && postDetails.id === postId) {
+        setPostDetails(response)
+      }
+      setIsLoading(false)
+      return response
+    } catch (err) {
+      setError(err.message)
+      setIsLoading(false)
+      throw err
+    }
+  }
 
   const contextValue = {
     posts,
@@ -19,7 +159,15 @@ export const GlobalState = ({ children }) => {
     isLoading,
     setIsLoading,
     error,
-    setError
+    setError,
+    login,
+    signup,
+    getPosts,
+    createPost,
+    getPostById,
+    getComments,
+    createComment,
+    likePost
   }
 
   return (
