@@ -1,0 +1,27 @@
+.feed-page {
+  width: 100%;
+}
+
+.feed-page h2 {
+  color: #1a1a2e;
+  margin-bottom: 0.5rem;
+}
+
+.feed-subtitle {
+  color: #666;
+  margin-bottom: 2rem;
+  font-size: 0.9rem;
+}
+
+.posts-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.no-posts {
+  text-align: center;
+  color: #666;
+  padding: 3rem;
+  font-size: 1.1rem;
+}
+
