@@ -397,6 +397,39 @@ export const createComment = async (postId, body) => {
   return newComment
 }
 
+// Função para obter interações do usuário
+const getUserInteractions = () => {
+  const token = localStorage.getItem('token')
+  if (!token) {
+    return {}
+  }
+  
+  // Extrair userId do token
+  const userId = token.split('_')[1] || '1'
+  const interactions = getStorageData('retrorank_user_interactions', {})
+  
+  return interactions[userId] || {}
+}
+
+// Função para salvar interações do usuário
+const saveUserInteractions = (interactions) => {
+  const token = localStorage.getItem('token')
+  if (!token) {
+    return
+  }
+  
+  const userId = token.split('_')[1] || '1'
+  const allInteractions = getStorageData('retrorank_user_interactions', {})
+  allInteractions[userId] = interactions
+  setStorageData('retrorank_user_interactions', allInteractions)
+}
+
+// Função para obter a interação atual do usuário em um post
+export const getUserPostInteraction = (postId) => {
+  const userInteractions = getUserInteractions()
+  return userInteractions[postId] || null // retorna 'like', 'dislike' ou null
+}
+
 // Função para dar like/dislike em um post
 export const likePost = async (postId, isLike) => {
   await delay(500)
@@ -413,14 +446,53 @@ export const likePost = async (postId, isLike) => {
     throw new Error('Post não encontrado')
   }
 
-  // Simular sistema de like/dislike simples
-  if (isLike) {
-    post.likes = (post.likes || 0) + 1
+  // Inicializar contadores se não existirem
+  post.likes = post.likes || 0
+  post.dislikes = post.dislikes || 0
+
+  // Obter interação atual do usuário
+  const userInteractions = getUserInteractions()
+  const currentInteraction = userInteractions[postId] // 'like', 'dislike' ou undefined
+
+  // Lógica de toggle
+  if (currentInteraction === 'like') {
+    // Se já deu like
+    if (isLike) {
+      // Clicou em like novamente: remover like
+      post.likes = Math.max(0, post.likes - 1)
+      delete userInteractions[postId]
+    } else {
+      // Clicou em dislike: remover like e adicionar dislike
+      post.likes = Math.max(0, post.likes - 1)
+      post.dislikes = (post.dislikes || 0) + 1
+      userInteractions[postId] = 'dislike'
+    }
+  } else if (currentInteraction === 'dislike') {
+    // Se já deu dislike
+    if (isLike) {
+      // Clicou em like: remover dislike e adicionar like
+      post.dislikes = Math.max(0, post.dislikes - 1)
+      post.likes = (post.likes || 0) + 1
+      userInteractions[postId] = 'like'
+    } else {
+      // Clicou em dislike novamente: remover dislike
+      post.dislikes = Math.max(0, post.dislikes - 1)
+      delete userInteractions[postId]
+    }
   } else {
-    post.dislikes = (post.dislikes || 0) + 1
+    // Primeira interação: adicionar like ou dislike
+    if (isLike) {
+      post.likes = (post.likes || 0) + 1
+      userInteractions[postId] = 'like'
+    } else {
+      post.dislikes = (post.dislikes || 0) + 1
+      userInteractions[postId] = 'dislike'
+    }
   }
   
+  // Salvar posts e interações
   setStorageData('retrorank_posts', posts)
+  saveUserInteractions(userInteractions)
   
   return post
 }

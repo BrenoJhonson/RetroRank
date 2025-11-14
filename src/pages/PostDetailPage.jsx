@@ -1,7 +1,8 @@
-import { useEffect, useContext } from 'react'
+import { useEffect, useContext, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { GlobalContext } from '../context/GlobalState'
 import useProtectedPage from '../hooks/useProtectedPage'
+import { getUserPostInteraction } from '../services/api'
 import CommentCard from '../components/CommentCard'
 import CreateCommentForm from '../components/CreateCommentForm'
 import Loading from '../components/Loading'
@@ -12,11 +13,14 @@ function PostDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { postDetails, comments, getPostById, getComments, likePost, isLoading, error } = useContext(GlobalContext)
+  const [userInteraction, setUserInteraction] = useState(null)
 
   useEffect(() => {
     if (id) {
       getPostById(id)
       getComments(id)
+      const interaction = getUserPostInteraction(id)
+      setUserInteraction(interaction)
     }
   }, [id, getPostById, getComments])
 
@@ -24,6 +28,8 @@ function PostDetailPage() {
     try {
       await likePost(id, true)
       await getPostById(id)
+      const newInteraction = getUserPostInteraction(id)
+      setUserInteraction(newInteraction)
     } catch (error) {
       console.error('Erro ao dar like:', error)
     }
@@ -33,6 +39,8 @@ function PostDetailPage() {
     try {
       await likePost(id, false)
       await getPostById(id)
+      const newInteraction = getUserPostInteraction(id)
+      setUserInteraction(newInteraction)
     } catch (error) {
       console.error('Erro ao dar dislike:', error)
     }
@@ -92,10 +100,18 @@ function PostDetailPage() {
         </div>
         <div className="post-footer">
           <div className="post-interactions">
-            <button className="like-button" onClick={handleLike} type="button">
+            <button 
+              className={`like-button ${userInteraction === 'like' ? 'active' : ''}`}
+              onClick={handleLike} 
+              type="button"
+            >
               👍 {postDetails.likes || 0}
             </button>
-            <button className="dislike-button" onClick={handleDislike} type="button">
+            <button 
+              className={`dislike-button ${userInteraction === 'dislike' ? 'active' : ''}`}
+              onClick={handleDislike} 
+              type="button"
+            >
               👎 {postDetails.dislikes || 0}
             </button>
           </div>

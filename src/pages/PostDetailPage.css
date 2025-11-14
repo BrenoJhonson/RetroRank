@@ -91,10 +91,22 @@
   transform: scale(1.05);
 }
 
+.like-button.active {
+  background: rgba(107, 207, 127, 0.4);
+  border-color: var(--retro-green);
+  box-shadow: 0 0 12px rgba(107, 207, 127, 0.5);
+}
+
 .dislike-button:hover {
   background: rgba(255, 107, 107, 0.2);
   border-color: var(--retro-accent);
   transform: scale(1.05);
+}
+
+.dislike-button.active {
+  background: rgba(255, 107, 107, 0.4);
+  border-color: var(--retro-accent);
+  box-shadow: 0 0 12px rgba(255, 107, 107, 0.5);
 }
 
 .comments-section {

@@ -9,6 +9,7 @@ export const STORAGE_KEYS = {
   TOKEN_TIMESTAMP: 'token_timestamp',
   USERS: 'retrorank_users',
   POSTS: 'retrorank_posts',
-  COMMENTS: 'retrorank_comments'
+  COMMENTS: 'retrorank_comments',
+  USER_INTERACTIONS: 'retrorank_user_interactions'
 }
 
