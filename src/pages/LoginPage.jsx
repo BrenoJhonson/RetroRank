@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { GlobalContext } from '../context/GlobalState'
 import useForm from '../hooks/useForm'
@@ -6,17 +6,25 @@ import './LoginPage.css'
 
 function LoginPage() {
   const navigate = useNavigate()
-  const { login, isLoading } = useContext(GlobalContext)
+  const { login, isLoading, setError: clearGlobalError } = useContext(GlobalContext)
   const [form, handleInputChange, resetForm] = useForm({ email: '', password: '' })
   const [error, setError] = useState('')
+
+  // Limpa erros globais quando a página é montada
+  useEffect(() => {
+    clearGlobalError(null)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const onSubmit = async (event) => {
     event.preventDefault()
     setError('')
+    clearGlobalError(null) // Limpa erro global também
 
     try {
       await login(form)
       resetForm()
+      clearGlobalError(null) // Garante que não há erro após sucesso
       navigate('/feed')
     } catch (err) {
       setError(err.message || 'Erro ao fazer login. Tente novamente.')
