@@ -62,12 +62,12 @@ export const GlobalState = ({ children }) => {
   }, [])
 
   // Função para criar um novo post
-  const createPost = async (body) => {
+  const createPost = useCallback(async (body) => {
     setIsLoading(true)
     setError(null)
     try {
       const response = await api.createPost(body)
-      setPosts([response, ...posts])
+      setPosts(prevPosts => [response, ...prevPosts])
       setIsLoading(false)
       return response
     } catch (err) {
@@ -75,10 +75,10 @@ export const GlobalState = ({ children }) => {
       setIsLoading(false)
       throw err
     }
-  }
+  }, [])
 
   // Função para buscar detalhes de um post
-  const getPostById = async (id) => {
+  const getPostById = useCallback(async (id) => {
     setIsLoading(true)
     setError(null)
     try {
@@ -91,10 +91,10 @@ export const GlobalState = ({ children }) => {
       setIsLoading(false)
       throw err
     }
-  }
+  }, [])
 
   // Função para buscar comentários de um post
-  const getComments = async (postId) => {
+  const getComments = useCallback(async (postId) => {
     setIsLoading(true)
     setError(null)
     try {
@@ -107,15 +107,15 @@ export const GlobalState = ({ children }) => {
       setIsLoading(false)
       throw err
     }
-  }
+  }, [])
 
   // Função para criar um comentário
-  const createComment = async (postId, body) => {
+  const createComment = useCallback(async (postId, body) => {
     setIsLoading(true)
     setError(null)
     try {
       const response = await api.createComment(postId, body)
-      setComments([...comments, response])
+      setComments(prevComments => [...prevComments, response])
       setIsLoading(false)
       return response
     } catch (err) {
@@ -123,26 +123,28 @@ export const GlobalState = ({ children }) => {
       setIsLoading(false)
       throw err
     }
-  }
+  }, [])
 
   // Função para dar like em um post
-  const likePost = async (postId, isLike) => {
+  const likePost = useCallback(async (postId, isLike) => {
     setIsLoading(true)
     setError(null)
     try {
       const response = await api.likePost(postId, isLike)
-      // Atualiza o post na lista de posts
-      const updatedPosts = posts.map(post => {
+      // Atualiza o post na lista de posts usando forma funcional
+      setPosts(prevPosts => prevPosts.map(post => {
         if (post.id === postId) {
           return response
         }
         return post
-      })
-      setPosts(updatedPosts)
+      }))
       // Atualiza também o postDetails se estiver visualizando
-      if (postDetails && postDetails.id === postId) {
-        setPostDetails(response)
-      }
+      setPostDetails(prevDetails => {
+        if (prevDetails && prevDetails.id === postId) {
+          return response
+        }
+        return prevDetails
+      })
       setIsLoading(false)
       return response
     } catch (err) {
@@ -150,7 +152,7 @@ export const GlobalState = ({ children }) => {
       setIsLoading(false)
       throw err
     }
-  }
+  }, [])
 
   const contextValue = {
     posts,
