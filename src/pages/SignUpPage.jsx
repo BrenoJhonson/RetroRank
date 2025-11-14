@@ -13,6 +13,7 @@ function SignUpPage() {
     password: '' 
   })
   const [error, setError] = useState('')
+  const [fieldErrors, setFieldErrors] = useState({})
 
   // Limpa erros globais quando a página é montada
   useEffect(() => {
@@ -20,10 +21,40 @@ function SignUpPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const validateForm = () => {
+    const errors = {}
+    
+    if (!form.name.trim()) {
+      errors.name = 'Nome é obrigatório'
+    } else if (form.name.trim().length < 3) {
+      errors.name = 'Nome deve ter pelo menos 3 caracteres'
+    }
+    
+    if (!form.email.trim()) {
+      errors.email = 'Email é obrigatório'
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      errors.email = 'Email inválido'
+    }
+    
+    if (!form.password) {
+      errors.password = 'Senha é obrigatória'
+    } else if (form.password.length < 6) {
+      errors.password = 'Senha deve ter pelo menos 6 caracteres'
+    }
+    
+    setFieldErrors(errors)
+    return Object.keys(errors).length === 0
+  }
+
   const onSubmit = async (event) => {
     event.preventDefault()
     setError('')
+    setFieldErrors({})
     clearGlobalError(null) // Limpa erro global também
+
+    if (!validateForm()) {
+      return
+    }
 
     try {
       await signup(form)
@@ -52,7 +83,9 @@ function SignUpPage() {
               onChange={handleInputChange}
               placeholder="Seu nome"
               required
+              className={fieldErrors.name ? 'input-error' : ''}
             />
+            {fieldErrors.name && <span className="field-error">{fieldErrors.name}</span>}
           </div>
 
           <div className="form-group">
@@ -65,7 +98,9 @@ function SignUpPage() {
               onChange={handleInputChange}
               placeholder="seu@email.com"
               required
+              className={fieldErrors.email ? 'input-error' : ''}
             />
+            {fieldErrors.email && <span className="field-error">{fieldErrors.email}</span>}
           </div>
 
           <div className="form-group">
@@ -79,7 +114,9 @@ function SignUpPage() {
               placeholder="Digite sua senha"
               required
               minLength={6}
+              className={fieldErrors.password ? 'input-error' : ''}
             />
+            {fieldErrors.password && <span className="field-error">{fieldErrors.password}</span>}
           </div>
 
           {error && <p className="error-message">{error}</p>}

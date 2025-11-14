@@ -9,6 +9,7 @@ function LoginPage() {
   const { login, isLoading, setError: clearGlobalError } = useContext(GlobalContext)
   const [form, handleInputChange, resetForm] = useForm({ email: '', password: '' })
   const [error, setError] = useState('')
+  const [fieldErrors, setFieldErrors] = useState({})
 
   // Limpa erros globais quando a página é montada
   useEffect(() => {
@@ -16,10 +17,32 @@ function LoginPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const validateForm = () => {
+    const errors = {}
+    
+    if (!form.email.trim()) {
+      errors.email = 'Email é obrigatório'
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      errors.email = 'Email inválido'
+    }
+    
+    if (!form.password) {
+      errors.password = 'Senha é obrigatória'
+    }
+    
+    setFieldErrors(errors)
+    return Object.keys(errors).length === 0
+  }
+
   const onSubmit = async (event) => {
     event.preventDefault()
     setError('')
+    setFieldErrors({})
     clearGlobalError(null) // Limpa erro global também
+
+    if (!validateForm()) {
+      return
+    }
 
     try {
       await login(form)
@@ -48,7 +71,9 @@ function LoginPage() {
               onChange={handleInputChange}
               placeholder="seu@email.com"
               required
+              className={fieldErrors.email ? 'input-error' : ''}
             />
+            {fieldErrors.email && <span className="field-error">{fieldErrors.email}</span>}
           </div>
 
           <div className="form-group">
@@ -61,7 +86,9 @@ function LoginPage() {
               onChange={handleInputChange}
               placeholder="Digite sua senha"
               required
+              className={fieldErrors.password ? 'input-error' : ''}
             />
+            {fieldErrors.password && <span className="field-error">{fieldErrors.password}</span>}
           </div>
 
           {error && <p className="error-message">{error}</p>}

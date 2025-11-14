@@ -9,13 +9,27 @@ function CreateCommentForm() {
   const { createComment, getComments, isLoading } = useContext(GlobalContext)
   const [form, handleInputChange, resetForm] = useForm({ content: '' })
   const [error, setError] = useState('')
+  const [fieldErrors, setFieldErrors] = useState({})
+
+  const validateForm = () => {
+    const errors = {}
+    
+    if (!form.content.trim()) {
+      errors.content = 'O comentário não pode estar vazio'
+    } else if (form.content.trim().length < 3) {
+      errors.content = 'Comentário deve ter pelo menos 3 caracteres'
+    }
+    
+    setFieldErrors(errors)
+    return Object.keys(errors).length === 0
+  }
 
   const onSubmit = async (event) => {
     event.preventDefault()
     setError('')
+    setFieldErrors({})
 
-    if (!form.content.trim()) {
-      setError('O comentário não pode estar vazio')
+    if (!validateForm()) {
       return
     }
 
@@ -42,7 +56,9 @@ function CreateCommentForm() {
             placeholder="Escreva seu comentário..."
             rows="3"
             required
+            className={fieldErrors.content ? 'input-error' : ''}
           />
+          {fieldErrors.content && <span className="field-error">{fieldErrors.content}</span>}
         </div>
 
         {error && <p className="error-message">{error}</p>}

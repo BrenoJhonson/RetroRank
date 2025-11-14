@@ -10,13 +10,33 @@ function CreatePostForm() {
     content: '' 
   })
   const [error, setError] = useState('')
+  const [fieldErrors, setFieldErrors] = useState({})
+
+  const validateForm = () => {
+    const errors = {}
+    
+    if (!form.title.trim()) {
+      errors.title = 'Título é obrigatório'
+    } else if (form.title.trim().length < 5) {
+      errors.title = 'Título deve ter pelo menos 5 caracteres'
+    }
+    
+    if (!form.content.trim()) {
+      errors.content = 'Conteúdo é obrigatório'
+    } else if (form.content.trim().length < 10) {
+      errors.content = 'Conteúdo deve ter pelo menos 10 caracteres'
+    }
+    
+    setFieldErrors(errors)
+    return Object.keys(errors).length === 0
+  }
 
   const onSubmit = async (event) => {
     event.preventDefault()
     setError('')
+    setFieldErrors({})
 
-    if (!form.title.trim() || !form.content.trim()) {
-      setError('Preencha todos os campos')
+    if (!validateForm()) {
       return
     }
 
@@ -42,7 +62,9 @@ function CreatePostForm() {
             onChange={handleInputChange}
             placeholder="Ex: Top 5 jogos do Super Nintendo"
             required
+            className={fieldErrors.title ? 'input-error' : ''}
           />
+          {fieldErrors.title && <span className="field-error">{fieldErrors.title}</span>}
         </div>
 
         <div className="form-group">
@@ -55,7 +77,9 @@ function CreatePostForm() {
             placeholder="Compartilhe seus pensamentos sobre jogos clássicos..."
             rows="4"
             required
+            className={fieldErrors.content ? 'input-error' : ''}
           />
+          {fieldErrors.content && <span className="field-error">{fieldErrors.content}</span>}
         </div>
 
         {error && <p className="error-message">{error}</p>}
