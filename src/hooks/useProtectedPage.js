@@ -1,13 +1,12 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { isTokenValid } from '../utils/auth'
 
 function useProtectedPage() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    
-    if (!token) {
+    if (!isTokenValid()) {
       navigate('/login')
     }
   }, [navigate])

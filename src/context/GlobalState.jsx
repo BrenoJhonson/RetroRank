@@ -1,5 +1,6 @@
 import { createContext, useState } from 'react'
 import * as api from '../services/api'
+import { saveToken } from '../utils/auth'
 
 export const GlobalContext = createContext()
 
@@ -16,7 +17,7 @@ export const GlobalState = ({ children }) => {
     setError(null)
     try {
       const response = await api.login(body)
-      localStorage.setItem('token', response.token)
+      saveToken(response.token)
       setIsLoading(false)
       return response
     } catch (err) {
@@ -32,7 +33,7 @@ export const GlobalState = ({ children }) => {
     setError(null)
     try {
       const response = await api.signup(body)
-      localStorage.setItem('token', response.token)
+      saveToken(response.token)
       setIsLoading(false)
       return response
     } catch (err) {
