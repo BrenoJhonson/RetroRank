@@ -6,7 +6,7 @@ import './SignUpPage.css'
 
 function SignUpPage() {
   const navigate = useNavigate()
-  const { signup } = useContext(GlobalContext)
+  const { signup, isLoading } = useContext(GlobalContext)
   const [form, handleInputChange, resetForm] = useForm({ 
     name: '', 
     email: '', 
@@ -76,8 +76,8 @@ function SignUpPage() {
 
           {error && <p className="error-message">{error}</p>}
 
-          <button type="submit" className="submit-button">
-            Cadastrar
+          <button type="submit" className="submit-button" disabled={isLoading}>
+            {isLoading ? 'Cadastrando...' : 'Cadastrar'}
           </button>
         </form>
 

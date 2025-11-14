@@ -3,8 +3,12 @@ import './Loading.css'
 function Loading() {
   return (
     <div className="loading-container">
-      <div className="loading-spinner"></div>
-      <p>Carregando...</p>
+      <div className="loading-spinner">
+        <div className="pixel-dot"></div>
+        <div className="pixel-dot"></div>
+        <div className="pixel-dot"></div>
+      </div>
+      <p className="loading-text">Carregando...</p>
     </div>
   )
 }

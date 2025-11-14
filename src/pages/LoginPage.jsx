@@ -6,7 +6,7 @@ import './LoginPage.css'
 
 function LoginPage() {
   const navigate = useNavigate()
-  const { login } = useContext(GlobalContext)
+  const { login, isLoading } = useContext(GlobalContext)
   const [form, handleInputChange, resetForm] = useForm({ email: '', password: '' })
   const [error, setError] = useState('')
 
@@ -58,8 +58,8 @@ function LoginPage() {
 
           {error && <p className="error-message">{error}</p>}
 
-          <button type="submit" className="submit-button">
-            Entrar
+          <button type="submit" className="submit-button" disabled={isLoading}>
+            {isLoading ? 'Entrando...' : 'Entrar'}
           </button>
         </form>
 

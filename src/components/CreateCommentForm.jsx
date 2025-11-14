@@ -6,7 +6,7 @@ import './CreateCommentForm.css'
 
 function CreateCommentForm() {
   const { id: postId } = useParams()
-  const { createComment, getComments } = useContext(GlobalContext)
+  const { createComment, getComments, isLoading } = useContext(GlobalContext)
   const [form, handleInputChange, resetForm] = useForm({ content: '' })
   const [error, setError] = useState('')
 
@@ -47,8 +47,8 @@ function CreateCommentForm() {
 
         {error && <p className="error-message">{error}</p>}
 
-        <button type="submit" className="submit-button">
-          Comentar
+        <button type="submit" className="submit-button" disabled={isLoading}>
+          {isLoading ? 'Comentando...' : 'Comentar'}
         </button>
       </form>
     </div>

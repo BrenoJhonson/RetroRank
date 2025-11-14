@@ -4,7 +4,7 @@ import useForm from '../hooks/useForm'
 import './CreatePostForm.css'
 
 function CreatePostForm() {
-  const { createPost } = useContext(GlobalContext)
+  const { createPost, isLoading } = useContext(GlobalContext)
   const [form, handleInputChange, resetForm] = useForm({ 
     title: '', 
     content: '' 
@@ -60,8 +60,8 @@ function CreatePostForm() {
 
         {error && <p className="error-message">{error}</p>}
 
-        <button type="submit" className="submit-button">
-          Publicar
+        <button type="submit" className="submit-button" disabled={isLoading}>
+          {isLoading ? 'Publicando...' : 'Publicar'}
         </button>
       </form>
     </div>
