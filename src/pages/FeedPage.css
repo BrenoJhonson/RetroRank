@@ -3,14 +3,18 @@
 }
 
 .feed-page h2 {
-  color: #1a1a2e;
+  color: var(--retro-light);
   margin-bottom: 0.5rem;
+  font-size: 2rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  letter-spacing: 1px;
 }
 
 .feed-subtitle {
-  color: #666;
+  color: var(--retro-blue);
   margin-bottom: 2rem;
-  font-size: 0.9rem;
+  font-size: 1rem;
+  opacity: 0.9;
 }
 
 .posts-container {
@@ -20,8 +24,9 @@
 
 .no-posts {
   text-align: center;
-  color: #666;
+  color: var(--retro-blue);
   padding: 3rem;
   font-size: 1.1rem;
+  opacity: 0.8;
 }
 

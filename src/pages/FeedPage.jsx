@@ -20,7 +20,7 @@ function FeedPage() {
 
   return (
     <div className="feed-page">
-      <h2>🎮 Feed RetroRank</h2>
+      <h2>Feed RetroRank</h2>
       <p className="feed-subtitle">Explore os melhores posts sobre jogos clássicos</p>
 
       <CreatePostForm />
