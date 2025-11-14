@@ -2,6 +2,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: linear-gradient(135deg, var(--retro-dark) 0%, var(--retro-dark-secondary) 100%);
 }
 
 .main-content {
@@ -10,5 +11,9 @@
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
+  background-color: rgba(224, 225, 221, 0.05);
+  border-radius: 8px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 

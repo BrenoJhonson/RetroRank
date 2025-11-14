@@ -4,12 +4,28 @@
   box-sizing: border-box;
 }
 
+:root {
+  /* Cores retro inspiradas em jogos 8-bit/16-bit */
+  --retro-dark: #0d1b2a;
+  --retro-dark-secondary: #1b263b;
+  --retro-purple: #415a77;
+  --retro-blue: #778da9;
+  --retro-light: #e0e1dd;
+  --retro-accent: #ff6b6b;
+  --retro-accent-secondary: #4ecdc4;
+  --retro-yellow: #ffd93d;
+  --retro-green: #6bcf7f;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(135deg, var(--retro-dark) 0%, var(--retro-dark-secondary) 100%);
+  color: var(--retro-light);
+  min-height: 100vh;
 }
 
 #root {
