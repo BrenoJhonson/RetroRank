@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react'
+import { createContext, useState, useCallback } from 'react'
 import * as api from '../services/api'
 import { saveToken } from '../utils/auth'
 
@@ -44,20 +44,22 @@ export const GlobalState = ({ children }) => {
   }
 
   // Função para buscar todos os posts
-  const getPosts = async () => {
+  const getPosts = useCallback(async () => {
     setIsLoading(true)
     setError(null)
     try {
       const response = await api.getPosts()
+      console.log('Posts carregados:', response.length)
       setPosts(response)
       setIsLoading(false)
       return response
     } catch (err) {
+      console.error('Erro ao carregar posts:', err)
       setError(err.message)
       setIsLoading(false)
       throw err
     }
-  }
+  }, [])
 
   // Função para criar um novo post
   const createPost = async (body) => {

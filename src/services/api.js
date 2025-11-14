@@ -7,8 +7,13 @@ const delay = (ms = 500) => new Promise(resolve => setTimeout(resolve, ms))
 const getStorageData = (key, defaultValue = []) => {
   try {
     const data = localStorage.getItem(key)
-    return data ? JSON.parse(data) : defaultValue
+    if (!data) {
+      return defaultValue
+    }
+    const parsed = JSON.parse(data)
+    return parsed || defaultValue
   } catch (error) {
+    console.error(`Erro ao ler ${key} do LocalStorage:`, error)
     return defaultValue
   }
 }
@@ -72,7 +77,9 @@ const initializeMockData = () => {
   }
 
   // Criar posts iniciais sobre jogos clássicos se não existirem
-  if (posts.length === 0) {
+  // Verifica se não há posts OU se há posts mas nenhum tem id '1' (primeiro post padrão)
+  const hasInitialPosts = posts.length > 0 && posts.some(post => post.id === '1')
+  if (!hasInitialPosts) {
     const now = Date.now()
     const initialPosts = [
       {
@@ -282,6 +289,9 @@ export const signup = async (body) => {
 // Função para buscar todos os posts
 export const getPosts = async () => {
   await delay(600)
+  
+  // Garantir que os dados estão inicializados
+  initializeMockData()
   
   const posts = getStorageData('retrorank_posts', [])
   const comments = getStorageData('retrorank_comments', [])

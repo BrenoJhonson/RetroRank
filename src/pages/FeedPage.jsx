@@ -14,6 +14,10 @@ function FeedPage() {
     getPosts()
   }, [getPosts])
 
+  useEffect(() => {
+    console.log('Estado atual - isLoading:', isLoading, 'posts:', posts.length)
+  }, [isLoading, posts.length])
+
   return (
     <div className="feed-page">
       <h2>🎮 Feed RetroRank</h2>
