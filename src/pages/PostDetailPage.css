@@ -3,27 +3,33 @@
 }
 
 .back-button {
-  background-color: #1a1a2e;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
+  background: linear-gradient(135deg, var(--retro-purple) 0%, var(--retro-blue) 100%);
+  color: var(--retro-light);
+  border: 2px solid var(--retro-accent-secondary);
+  border-radius: 6px;
   padding: 0.75rem 1.5rem;
   margin-bottom: 2rem;
   cursor: pointer;
   font-size: 1rem;
-  transition: background-color 0.3s;
+  font-weight: 600;
+  transition: all 0.3s;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .back-button:hover {
-  background-color: #2a2a4e;
+  background: linear-gradient(135deg, var(--retro-blue) 0%, var(--retro-accent-secondary) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
 }
 
 .post-detail-card {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(27, 38, 59, 0.8) 0%, rgba(65, 90, 119, 0.8) 100%);
+  border: 2px solid var(--retro-blue);
+  border-radius: 12px;
   padding: 2rem;
   margin-bottom: 2rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .post-header {
@@ -32,8 +38,9 @@
 
 .post-author {
   font-size: 0.9rem;
-  color: #666;
+  color: var(--retro-blue);
   font-weight: 500;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .post-content {
@@ -41,21 +48,23 @@
 }
 
 .post-content h2 {
-  color: #1a1a2e;
+  color: var(--retro-light);
   margin-bottom: 1rem;
   font-size: 1.8rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .post-text {
-  color: #333;
+  color: var(--retro-light);
   line-height: 1.8;
   font-size: 1.1rem;
   white-space: pre-line;
+  opacity: 0.95;
 }
 
 .post-footer {
   padding-top: 1.5rem;
-  border-top: 1px solid #eee;
+  border-top: 2px solid var(--retro-blue);
 }
 
 .post-interactions {
@@ -65,41 +74,50 @@
 
 .like-button,
 .dislike-button {
-  background: none;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  background: rgba(224, 225, 221, 0.1);
+  border: 2px solid var(--retro-blue);
+  border-radius: 6px;
   padding: 0.5rem 1rem;
   cursor: pointer;
   font-size: 0.9rem;
-  transition: background-color 0.3s;
+  color: var(--retro-light);
+  transition: all 0.3s;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .like-button:hover {
-  background-color: #e8f5e9;
+  background: rgba(107, 207, 127, 0.2);
+  border-color: var(--retro-green);
+  transform: scale(1.05);
 }
 
 .dislike-button:hover {
-  background-color: #ffebee;
+  background: rgba(255, 107, 107, 0.2);
+  border-color: var(--retro-accent);
+  transform: scale(1.05);
 }
 
 .comments-section {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(27, 38, 59, 0.8) 0%, rgba(65, 90, 119, 0.8) 100%);
+  border: 2px solid var(--retro-blue);
+  border-radius: 12px;
   padding: 2rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .comments-section h3 {
-  color: #1a1a2e;
+  color: var(--retro-light);
   margin-bottom: 1.5rem;
   font-size: 1.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .no-comments {
   text-align: center;
-  color: #666;
+  color: var(--retro-blue);
   padding: 2rem;
   font-size: 1rem;
+  opacity: 0.8;
 }
 
 .comments-list {

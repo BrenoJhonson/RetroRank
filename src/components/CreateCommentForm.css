@@ -1,15 +1,17 @@
 .create-comment-form-container {
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
+  background: linear-gradient(135deg, rgba(27, 38, 59, 0.7) 0%, rgba(65, 90, 119, 0.7) 100%);
+  border: 2px solid var(--retro-blue);
   border-radius: 8px;
   padding: 1.5rem;
   margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .create-comment-form-container h4 {
-  color: #1a1a2e;
+  color: #ffffff;
   margin-bottom: 1rem;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .create-comment-form {
@@ -25,38 +27,52 @@
 
 .form-group textarea {
   padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  border: 2px solid var(--retro-blue);
+  border-radius: 6px;
   font-size: 1rem;
   font-family: inherit;
+  background-color: rgba(224, 225, 221, 0.15);
+  color: var(--retro-light);
   resize: vertical;
-  transition: border-color 0.3s;
+  transition: all 0.3s;
+}
+
+.form-group textarea::placeholder {
+  color: var(--retro-light);
+  opacity: 0.6;
 }
 
 .form-group textarea:focus {
   outline: none;
-  border-color: #1a1a2e;
+  border-color: var(--retro-accent-secondary);
+  background-color: rgba(224, 225, 221, 0.2);
+  box-shadow: 0 0 8px rgba(78, 205, 196, 0.3);
 }
 
 .error-message {
-  color: #d32f2f;
+  color: var(--retro-accent);
   font-size: 0.9rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .submit-button {
   padding: 0.75rem 1.5rem;
-  background-color: #1a1a2e;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
+  background: linear-gradient(135deg, var(--retro-purple) 0%, var(--retro-blue) 100%);
+  color: var(--retro-light);
+  border: 2px solid var(--retro-accent-secondary);
+  border-radius: 6px;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   align-self: flex-start;
 }
 
 .submit-button:hover {
-  background-color: #2a2a4e;
+  background: linear-gradient(135deg, var(--retro-blue) 0%, var(--retro-accent-secondary) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
 }
 
