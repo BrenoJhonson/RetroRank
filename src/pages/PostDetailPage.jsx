@@ -11,7 +11,7 @@ function PostDetailPage() {
   useProtectedPage()
   const { id } = useParams()
   const navigate = useNavigate()
-  const { postDetails, comments, getPostById, getComments, likePost, isLoading } = useContext(GlobalContext)
+  const { postDetails, comments, getPostById, getComments, likePost, isLoading, error } = useContext(GlobalContext)
 
   useEffect(() => {
     if (id) {
@@ -42,11 +42,36 @@ function PostDetailPage() {
     return <Loading />
   }
 
+  if (error) {
+    return (
+      <div className="post-detail-page">
+        <div className="error-container">
+          <p className="error-message">{error}</p>
+          <button className="retry-button" onClick={() => {
+            if (id) {
+              getPostById(id)
+              getComments(id)
+            }
+          }}>
+            Tentar novamente
+          </button>
+          <button className="back-button" onClick={() => navigate('/feed')}>
+            Voltar para o Feed
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   if (!postDetails) {
     return (
       <div className="post-detail-page">
-        <p>Post não encontrado</p>
-        <button onClick={() => navigate('/feed')}>Voltar para o Feed</button>
+        <div className="error-container">
+          <p className="error-message">Post não encontrado</p>
+          <button className="back-button" onClick={() => navigate('/feed')}>
+            Voltar para o Feed
+          </button>
+        </div>
       </div>
     )
   }

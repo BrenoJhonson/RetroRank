@@ -11,7 +11,7 @@ import './FeedPage.css'
 function FeedPage() {
   useProtectedPage()
   const navigate = useNavigate()
-  const { posts, getPosts, isLoading } = useContext(GlobalContext)
+  const { posts, getPosts, isLoading, error } = useContext(GlobalContext)
 
   const handleLogout = () => {
     clearAuth()
@@ -42,6 +42,13 @@ function FeedPage() {
 
       {isLoading ? (
         <Loading />
+      ) : error ? (
+        <div className="error-container">
+          <p className="error-message">{error}</p>
+          <button className="retry-button" onClick={() => getPosts()}>
+            Tentar novamente
+          </button>
+        </div>
       ) : (
         <div className="posts-container">
           {posts.length === 0 ? (

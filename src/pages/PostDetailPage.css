@@ -125,3 +125,40 @@
   flex-direction: column;
 }
 
+.error-container {
+  text-align: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(27, 38, 59, 0.8) 0%, rgba(65, 90, 119, 0.8) 100%);
+  border: 2px solid var(--retro-accent);
+  border-radius: 12px;
+  margin-top: 2rem;
+}
+
+.error-message {
+  color: var(--retro-accent);
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.retry-button {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, var(--retro-purple) 0%, var(--retro-blue) 100%);
+  color: var(--retro-light);
+  border: 2px solid var(--retro-accent-secondary);
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  margin: 0.5rem;
+}
+
+.retry-button:hover {
+  background: linear-gradient(135deg, var(--retro-blue) 0%, var(--retro-accent-secondary) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
