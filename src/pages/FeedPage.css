@@ -2,6 +2,13 @@
   width: 100%;
 }
 
+.feed-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
 .feed-page h2 {
   color: var(--retro-light);
   margin-bottom: 0.5rem;
@@ -12,9 +19,28 @@
 
 .feed-subtitle {
   color: var(--retro-blue);
-  margin-bottom: 2rem;
   font-size: 1rem;
   opacity: 0.9;
+}
+
+.logout-button {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, var(--retro-purple) 0%, var(--retro-blue) 100%);
+  color: var(--retro-light);
+  border: 2px solid var(--retro-accent);
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.logout-button:hover {
+  background: linear-gradient(135deg, var(--retro-accent) 0%, #ff5252 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
 }
 
 .posts-container {

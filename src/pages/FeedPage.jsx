@@ -1,6 +1,8 @@
 import { useEffect, useContext } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { GlobalContext } from '../context/GlobalState'
 import useProtectedPage from '../hooks/useProtectedPage'
+import { clearAuth } from '../utils/auth'
 import PostCard from '../components/PostCard'
 import CreatePostForm from '../components/CreatePostForm'
 import Loading from '../components/Loading'
@@ -8,7 +10,13 @@ import './FeedPage.css'
 
 function FeedPage() {
   useProtectedPage()
+  const navigate = useNavigate()
   const { posts, getPosts, isLoading } = useContext(GlobalContext)
+
+  const handleLogout = () => {
+    clearAuth()
+    navigate('/login')
+  }
 
   useEffect(() => {
     getPosts()
@@ -20,8 +28,15 @@ function FeedPage() {
 
   return (
     <div className="feed-page">
-      <h2>Feed RetroRank</h2>
-      <p className="feed-subtitle">Explore os melhores posts sobre jogos clássicos</p>
+      <div className="feed-header">
+        <div>
+          <h2>Feed RetroRank</h2>
+          <p className="feed-subtitle">Explore os melhores posts sobre jogos clássicos</p>
+        </div>
+        <button className="logout-button" onClick={handleLogout}>
+          Sair
+        </button>
+      </div>
 
       <CreatePostForm />
 
