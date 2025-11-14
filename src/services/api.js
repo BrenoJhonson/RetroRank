@@ -33,20 +33,47 @@ const initializeMockData = () => {
   const posts = getStorageData('retrorank_posts', [])
   const comments = getStorageData('retrorank_comments', [])
 
-  // Criar usuário padrão se não existir
+  // Criar usuários padrão se não existirem
   if (users.length === 0) {
-    const defaultUser = {
-      id: '1',
-      name: 'Gamer Retro',
-      email: 'gamer@retro.com',
-      password: '123456'
-    }
-    users.push(defaultUser)
+    const defaultUsers = [
+      {
+        id: '1',
+        name: 'Gamer Retro',
+        email: 'gamer@retro.com',
+        password: '123456'
+      },
+      {
+        id: '2',
+        name: 'PixelMaster',
+        email: 'pixel@retro.com',
+        password: '123456'
+      },
+      {
+        id: '3',
+        name: 'NostalgiaGamer',
+        email: 'nostalgia@retro.com',
+        password: '123456'
+      },
+      {
+        id: '4',
+        name: 'RetroCollector',
+        email: 'collector@retro.com',
+        password: '123456'
+      },
+      {
+        id: '5',
+        name: '8BitHero',
+        email: 'hero@retro.com',
+        password: '123456'
+      }
+    ]
+    defaultUsers.forEach(user => users.push(user))
     setStorageData('retrorank_users', users)
   }
 
   // Criar posts iniciais sobre jogos clássicos se não existirem
   if (posts.length === 0) {
+    const now = Date.now()
     const initialPosts = [
       {
         id: '1',
@@ -57,51 +84,131 @@ const initializeMockData = () => {
         likes: 42,
         dislikes: 2,
         commentsCount: 8,
-        createdAt: new Date().toISOString()
+        createdAt: new Date(now - 2 * 24 * 60 * 60 * 1000).toISOString() // 2 dias atrás
       },
       {
         id: '2',
-        creatorId: '1',
-        creatorName: 'Gamer Retro',
+        creatorId: '2',
+        creatorName: 'PixelMaster',
         title: 'Melhores trilhas sonoras de 8-bit',
         content: 'A música dos jogos 8-bit tem um charme único. Minhas favoritas:\n- Mega Man 2 (Dr. Wily Stage)\n- Castlevania (Vampire Killer)\n- Super Mario Bros (Overworld Theme)\n- The Legend of Zelda (Dungeon Theme)\n\nQual é a sua favorita?',
         likes: 35,
         dislikes: 1,
         commentsCount: 12,
-        createdAt: new Date().toISOString()
+        createdAt: new Date(now - 1 * 24 * 60 * 60 * 1000).toISOString() // 1 dia atrás
       },
       {
         id: '3',
-        creatorId: '1',
-        creatorName: 'Gamer Retro',
+        creatorId: '3',
+        creatorName: 'NostalgiaGamer',
         title: 'Discussão: Qual o melhor Zelda?',
         content: 'Sempre há debate sobre qual é o melhor jogo da série Zelda. Para mim, A Link to the Past do SNES é imbatível, mas entendo quem prefere Ocarina of Time ou Breath of the Wild. O que vocês acham?',
         likes: 28,
         dislikes: 3,
         commentsCount: 15,
-        createdAt: new Date().toISOString()
+        createdAt: new Date(now - 18 * 60 * 60 * 1000).toISOString() // 18 horas atrás
+      },
+      {
+        id: '4',
+        creatorId: '4',
+        creatorName: 'RetroCollector',
+        title: 'Jogos do Mega Drive que todo mundo deveria jogar',
+        content: 'O Sega Mega Drive (Genesis) tinha jogos incríveis! Minhas recomendações:\n\n- Sonic the Hedgehog 2: Velocidade e diversão pura\n- Streets of Rage 2: O melhor beat\'em up da época\n- Phantasy Star IV: RPG épico e emocionante\n- Gunstar Heroes: Ação frenética e criativa\n- Shining Force: Estratégia em turnos perfeita\n\nQual vocês já jogaram?',
+        likes: 31,
+        dislikes: 0,
+        commentsCount: 9,
+        createdAt: new Date(now - 12 * 60 * 60 * 1000).toISOString() // 12 horas atrás
+      },
+      {
+        id: '5',
+        creatorId: '5',
+        creatorName: '8BitHero',
+        title: 'A arte pixelada nunca envelhece',
+        content: 'Alguém mais acha que os gráficos pixelados dos jogos antigos têm uma beleza atemporal? Cada pixel era colocado com cuidado, criando obras de arte que até hoje impressionam. Jogos como Final Fantasy VI, Secret of Mana e Chrono Trigger são verdadeiras galerias de arte interativas!',
+        likes: 47,
+        dislikes: 1,
+        commentsCount: 18,
+        createdAt: new Date(now - 8 * 60 * 60 * 1000).toISOString() // 8 horas atrás
+      },
+      {
+        id: '6',
+        creatorId: '2',
+        creatorName: 'PixelMaster',
+        title: 'Melhores jogos de plataforma do NES',
+        content: 'O NES tinha os melhores jogos de plataforma! Minha lista:\n\n1. Super Mario Bros 3 - Perfeição absoluta\n2. Mega Man 2 - Desafio e diversão\n3. Castlevania - Atmosfera única\n4. Ninja Gaiden - Cutscenes revolucionárias\n5. DuckTales - Simplesmente incrível\n\nQual é o seu favorito?',
+        likes: 39,
+        dislikes: 2,
+        commentsCount: 14,
+        createdAt: new Date(now - 6 * 60 * 60 * 1000).toISOString() // 6 horas atrás
+      },
+      {
+        id: '7',
+        creatorId: '3',
+        creatorName: 'NostalgiaGamer',
+        title: 'Trilhas sonoras que marcaram nossa infância',
+        content: 'As músicas dos jogos retrô são inesquecíveis! Algumas que me emocionam até hoje:\n\n- Green Hill Zone (Sonic)\n- Overworld Theme (Super Mario Bros)\n- Main Theme (The Legend of Zelda)\n- Stage 1 (Mega Man 2)\n- Bloody Tears (Castlevania)\n\nQual música te traz mais nostalgia?',
+        likes: 52,
+        dislikes: 0,
+        commentsCount: 22,
+        createdAt: new Date(now - 4 * 60 * 60 * 1000).toISOString() // 4 horas atrás
+      },
+      {
+        id: '8',
+        creatorId: '1',
+        creatorName: 'Gamer Retro',
+        title: 'RPGs clássicos que todo mundo deveria conhecer',
+        content: 'Os RPGs dos anos 90 são obras-primas! Recomendo fortemente:\n\n- Chrono Trigger (SNES) - História e gameplay perfeitos\n- Final Fantasy VI (SNES) - Personagens inesquecíveis\n- EarthBound (SNES) - Humor e originalidade\n- Secret of Mana (SNES) - Aventura cooperativa\n- Phantasy Star IV (Mega Drive) - Sci-fi épico\n\nJá jogaram algum desses?',
+        likes: 44,
+        dislikes: 1,
+        commentsCount: 16,
+        createdAt: new Date(now - 2 * 60 * 60 * 1000).toISOString() // 2 horas atrás
       }
     ]
     setStorageData('retrorank_posts', initialPosts)
   }
 
   if (comments.length === 0) {
+    const now = Date.now()
     const initialComments = [
       {
         id: '1',
         postId: '1',
-        creatorId: '1',
-        creatorName: 'Gamer Retro',
-        content: 'Super Mario World é realmente incrível!',
-        createdAt: new Date().toISOString()
+        creatorId: '2',
+        creatorName: 'PixelMaster',
+        content: 'Super Mario World é realmente incrível! Definitivamente merece estar no topo.',
+        createdAt: new Date(now - 2 * 24 * 60 * 60 * 1000 + 2 * 60 * 60 * 1000).toISOString()
       },
       {
         id: '2',
         postId: '1',
+        creatorId: '3',
+        creatorName: 'NostalgiaGamer',
+        content: 'Concordo totalmente com essa lista! Chrono Trigger é uma obra-prima.',
+        createdAt: new Date(now - 2 * 24 * 60 * 60 * 1000 + 4 * 60 * 60 * 1000).toISOString()
+      },
+      {
+        id: '3',
+        postId: '2',
+        creatorId: '4',
+        creatorName: 'RetroCollector',
+        content: 'A trilha do Mega Man 2 é simplesmente perfeita! Dr. Wily Stage é épica!',
+        createdAt: new Date(now - 1 * 24 * 60 * 60 * 1000 + 1 * 60 * 60 * 1000).toISOString()
+      },
+      {
+        id: '4',
+        postId: '3',
+        creatorId: '5',
+        creatorName: '8BitHero',
+        content: 'A Link to the Past é meu favorito também! A exploração é perfeita.',
+        createdAt: new Date(now - 18 * 60 * 60 * 1000 + 1 * 60 * 60 * 1000).toISOString()
+      },
+      {
+        id: '5',
+        postId: '4',
         creatorId: '1',
         creatorName: 'Gamer Retro',
-        content: 'Concordo totalmente com essa lista!',
-        createdAt: new Date().toISOString()
+        content: 'Gunstar Heroes é um dos melhores jogos de ação que já joguei!',
+        createdAt: new Date(now - 12 * 60 * 60 * 1000 + 1 * 60 * 60 * 1000).toISOString()
       }
     ]
     setStorageData('retrorank_comments', initialComments)
