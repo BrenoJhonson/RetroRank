@@ -20,3 +20,30 @@
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
+/* Tablet */
+@media (max-width: 1024px) {
+  .header {
+    padding: 1.2rem;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .header {
+    padding: 1rem;
+  }
+
+  .header h1 {
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+  }
+
+  .header p {
+    font-size: 0.9rem;
+  }
+}
+

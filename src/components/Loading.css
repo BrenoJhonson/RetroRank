@@ -67,3 +67,33 @@
   }
 }
 
+/* Tablet */
+@media (max-width: 1024px) {
+  .loading-container {
+    padding: 2.5rem;
+    min-height: 180px;
+  }
+
+  .loading-text {
+    font-size: 0.95rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .loading-container {
+    padding: 2rem;
+    min-height: 150px;
+    gap: 1rem;
+  }
+
+  .pixel-dot {
+    width: 14px;
+    height: 14px;
+  }
+
+  .loading-text {
+    font-size: 0.9rem;
+  }
+}
+

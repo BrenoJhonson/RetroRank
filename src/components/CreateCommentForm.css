@@ -95,3 +95,39 @@
   transform: none;
 }
 
+/* Tablet */
+@media (max-width: 1024px) {
+  .create-comment-form-container {
+    padding: 1.25rem;
+  }
+
+  .create-comment-form-container h4 {
+    font-size: 1.1rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .create-comment-form-container {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .create-comment-form-container h4 {
+    font-size: 1rem;
+  }
+
+  .form-group textarea {
+    padding: 0.65rem;
+    font-size: 0.95rem;
+    min-height: 80px;
+  }
+
+  .submit-button {
+    padding: 0.65rem 1.2rem;
+    font-size: 0.95rem;
+    width: 100%;
+    align-self: stretch;
+  }
+}
+
