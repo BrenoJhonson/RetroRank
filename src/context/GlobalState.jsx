@@ -49,12 +49,10 @@ export const GlobalState = ({ children }) => {
     setError(null)
     try {
       const response = await api.getPosts()
-      console.log('Posts carregados:', response.length)
       setPosts(response)
       setIsLoading(false)
       return response
     } catch (err) {
-      console.error('Erro ao carregar posts:', err)
       setError(err.message)
       setIsLoading(false)
       throw err

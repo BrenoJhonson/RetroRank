@@ -22,10 +22,6 @@ function FeedPage() {
     getPosts()
   }, [getPosts])
 
-  useEffect(() => {
-    console.log('Estado atual - isLoading:', isLoading, 'posts:', posts.length)
-  }, [isLoading, posts.length])
-
   return (
     <div className="feed-page">
       <div className="feed-header">

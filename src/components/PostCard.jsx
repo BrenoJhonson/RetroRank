@@ -21,7 +21,7 @@ function PostCard({ post }) {
   const handleLike = async (event) => {
     event.stopPropagation()
     try {
-      const updatedPost = await likePost(post.id, true)
+      await likePost(post.id, true)
       const newInteraction = getUserPostInteraction(post.id)
       setUserInteraction(newInteraction)
       // Atualizar lista de posts para refletir mudanças
@@ -34,7 +34,7 @@ function PostCard({ post }) {
   const handleDislike = async (event) => {
     event.stopPropagation()
     try {
-      const updatedPost = await likePost(post.id, false)
+      await likePost(post.id, false)
       const newInteraction = getUserPostInteraction(post.id)
       setUserInteraction(newInteraction)
       // Atualizar lista de posts para refletir mudanças
