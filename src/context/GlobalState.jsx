@@ -123,6 +123,28 @@ export const GlobalState = ({ children }) => {
     }
   }, [])
 
+  // Função para deletar um comentário
+  const deleteComment = useCallback(async (commentId, postId) => {
+    setIsLoading(true)
+    setError(null)
+    try {
+      await api.deleteComment(commentId)
+      // Remove o comentário da lista
+      setComments(prevComments => prevComments.filter(comment => comment.id !== commentId))
+      // Atualiza a contagem de comentários no post
+      if (postId) {
+        await getPostById(postId)
+        await getPosts()
+      }
+      setIsLoading(false)
+      return { success: true }
+    } catch (err) {
+      setError(err.message)
+      setIsLoading(false)
+      throw err
+    }
+  }, [getPostById, getPosts])
+
   // Função para dar like em um post
   const likePost = useCallback(async (postId, isLike) => {
     setIsLoading(true)
@@ -194,6 +216,7 @@ export const GlobalState = ({ children }) => {
     getPostById,
     getComments,
     createComment,
+    deleteComment,
     likePost,
     deletePost
   }

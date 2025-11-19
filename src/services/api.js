@@ -397,6 +397,43 @@ export const createComment = async (postId, body) => {
   return newComment
 }
 
+// Função para deletar um comentário
+export const deleteComment = async (commentId) => {
+  await delay(500)
+
+  const token = localStorage.getItem('token')
+  if (!token) {
+    throw new Error('Não autenticado')
+  }
+
+  const userId = token.split('_')[1] || '1'
+  const comments = getStorageData('retrorank_comments', [])
+  const comment = comments.find(c => c.id === commentId)
+
+  if (!comment) {
+    throw new Error('Comentário não encontrado')
+  }
+
+  // Verificar se o usuário é o dono do comentário
+  if (comment.creatorId !== userId) {
+    throw new Error('Você não tem permissão para deletar este comentário')
+  }
+
+  // Remover o comentário
+  const updatedComments = comments.filter(c => c.id !== commentId)
+  setStorageData('retrorank_comments', updatedComments)
+
+  // Atualizar contagem de comentários no post
+  const posts = getStorageData('retrorank_posts', [])
+  const post = posts.find(p => p.id === comment.postId)
+  if (post) {
+    post.commentsCount = updatedComments.filter(c => c.postId === comment.postId).length
+    setStorageData('retrorank_posts', posts)
+  }
+
+  return { success: true }
+}
+
 // Função para obter interações do usuário
 const getUserInteractions = () => {
   const token = localStorage.getItem('token')
