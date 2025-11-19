@@ -534,6 +534,38 @@ export const likePost = async (postId, isLike) => {
   return post
 }
 
+// Função para atualizar um post
+export const updatePost = async (postId, body) => {
+  await delay(800)
+
+  const token = localStorage.getItem('token')
+  if (!token) {
+    throw new Error('Não autenticado')
+  }
+
+  const userId = token.split('_')[1] || '1'
+  const posts = getStorageData('retrorank_posts', [])
+  const post = posts.find(p => p.id === postId)
+
+  if (!post) {
+    throw new Error('Post não encontrado')
+  }
+
+  // Verificar se o usuário é o dono do post
+  if (post.creatorId !== userId) {
+    throw new Error('Você não tem permissão para editar este post')
+  }
+
+  // Atualizar o post
+  post.title = body.title
+  post.content = body.content
+  post.updatedAt = new Date().toISOString()
+
+  setStorageData('retrorank_posts', posts)
+
+  return post
+}
+
 // Função para deletar um post
 export const deletePost = async (postId) => {
   await delay(500)

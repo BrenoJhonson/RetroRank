@@ -75,6 +75,35 @@ export const GlobalState = ({ children }) => {
     }
   }, [])
 
+  // Função para atualizar um post
+  const updatePost = useCallback(async (postId, body) => {
+    setIsLoading(true)
+    setError(null)
+    try {
+      const response = await api.updatePost(postId, body)
+      // Atualiza o post na lista de posts
+      setPosts(prevPosts => prevPosts.map(post => {
+        if (post.id === postId) {
+          return response
+        }
+        return post
+      }))
+      // Atualiza também o postDetails se estiver visualizando
+      setPostDetails(prevDetails => {
+        if (prevDetails && prevDetails.id === postId) {
+          return response
+        }
+        return prevDetails
+      })
+      setIsLoading(false)
+      return response
+    } catch (err) {
+      setError(err.message)
+      setIsLoading(false)
+      throw err
+    }
+  }, [])
+
   // Função para buscar detalhes de um post
   const getPostById = useCallback(async (id) => {
     setIsLoading(true)
@@ -213,6 +242,7 @@ export const GlobalState = ({ children }) => {
     signup,
     getPosts,
     createPost,
+    updatePost,
     getPostById,
     getComments,
     createComment,

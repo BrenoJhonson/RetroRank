@@ -13,11 +13,25 @@ function PostDetailPage() {
   useProtectedPage()
   const { id } = useParams()
   const navigate = useNavigate()
-  const { postDetails, comments, getPostById, getComments, likePost, deletePost, isLoading, error } = useContext(GlobalContext)
+  const { postDetails, comments, getPostById, getComments, getPosts, likePost, deletePost, updatePost, isLoading, error } = useContext(GlobalContext)
   const [userInteraction, setUserInteraction] = useState(null)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editError, setEditError] = useState('')
+  const [fieldErrors, setFieldErrors] = useState({})
   const currentUserId = getCurrentUserId()
   const isOwner = postDetails?.creatorId === currentUserId
+  
+  // Usar useState diretamente para ter controle total sobre os valores
+  const [editForm, setEditForm] = useState({
+    title: '',
+    content: ''
+  })
+  
+  const handleEditInputChange = (event) => {
+    const { name, value } = event.target
+    setEditForm(prev => ({ ...prev, [name]: value }))
+  }
 
   useEffect(() => {
     if (id) {
@@ -27,6 +41,16 @@ function PostDetailPage() {
       setUserInteraction(interaction)
     }
   }, [id, getPostById, getComments])
+
+  // Atualizar formulário de edição quando postDetails mudar (apenas quando não estiver editando)
+  useEffect(() => {
+    if (postDetails && !isEditing) {
+      setEditForm({
+        title: postDetails.title || '',
+        content: postDetails.content || ''
+      })
+    }
+  }, [postDetails, isEditing])
 
   const handleLike = async () => {
     try {
@@ -70,6 +94,72 @@ function PostDetailPage() {
       alert(error.message || 'Erro ao deletar post. Tente novamente.')
     } finally {
       setIsDeleting(false)
+    }
+  }
+
+  const handleEdit = () => {
+    // Carregar valores atuais do post no formulário antes de entrar no modo de edição
+    if (postDetails) {
+      // Atualizar o formulário diretamente com os valores atuais
+      setEditForm({
+        title: postDetails.title || '',
+        content: postDetails.content || ''
+      })
+    }
+    setIsEditing(true)
+    setEditError('')
+    setFieldErrors({})
+  }
+
+  const handleCancelEdit = () => {
+    setIsEditing(false)
+    setEditError('')
+    setFieldErrors({})
+    // Restaurar valores originais do postDetails
+    if (postDetails) {
+      setEditForm({
+        title: postDetails.title || '',
+        content: postDetails.content || ''
+      })
+    }
+  }
+
+  const validateEditForm = () => {
+    const errors = {}
+
+    if (!editForm.title.trim()) {
+      errors.title = 'Título é obrigatório'
+    } else if (editForm.title.trim().length < 5) {
+      errors.title = 'Título deve ter pelo menos 5 caracteres'
+    }
+
+    if (!editForm.content.trim()) {
+      errors.content = 'Conteúdo é obrigatório'
+    } else if (editForm.content.trim().length < 10) {
+      errors.content = 'Conteúdo deve ter pelo menos 10 caracteres'
+    }
+
+    setFieldErrors(errors)
+    return Object.keys(errors).length === 0
+  }
+
+  const handleSaveEdit = async (event) => {
+    event.preventDefault()
+    setEditError('')
+    setFieldErrors({})
+
+    if (!validateEditForm()) {
+      return
+    }
+
+    try {
+      await updatePost(id, editForm)
+      await getPostById(id)
+      await getPosts()
+      setIsEditing(false)
+    } catch (error) {
+      console.error('Erro ao editar post:', error)
+      setEditError(error.message || 'Erro ao editar post. Tente novamente.')
     }
   }
 
@@ -120,22 +210,75 @@ function PostDetailPage() {
       <div className="post-detail-card">
         <div className="post-header">
           <p className="post-author">Por: {postDetails.creatorName}</p>
-          {isOwner && (
-            <button
-              className="delete-post-button"
-              onClick={handleDelete}
-              type="button"
-              disabled={isDeleting}
-              title="Excluir post"
-            >
-              {isDeleting ? 'Excluindo...' : 'Delete'}
-            </button>
+          {isOwner && !isEditing && (
+            <div className="post-actions">
+              <button
+                className="edit-post-button"
+                onClick={handleEdit}
+                type="button"
+                title="Editar post"
+              >
+                Editar
+              </button>
+              <button
+                className="delete-post-button"
+                onClick={handleDelete}
+                type="button"
+                disabled={isDeleting}
+                title="Excluir post"
+              >
+                {isDeleting ? 'Excluindo...' : 'Delete'}
+              </button>
+            </div>
           )}
         </div>
-        <div className="post-content">
-          <h2>{postDetails.title || 'Sem título'}</h2>
-          <p className="post-text">{postDetails.content}</p>
-        </div>
+        {isEditing ? (
+          <form onSubmit={handleSaveEdit} className="edit-post-form">
+            <div className="form-group">
+              <label htmlFor="edit-title">Título</label>
+              <input
+                id="edit-title"
+                name="title"
+                type="text"
+                value={editForm.title}
+                onChange={handleEditInputChange}
+                required
+                className={fieldErrors.title ? 'input-error' : ''}
+              />
+              {fieldErrors.title && <span className="field-error">{fieldErrors.title}</span>}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="edit-content">Conteúdo</label>
+              <textarea
+                id="edit-content"
+                name="content"
+                value={editForm.content}
+                onChange={handleEditInputChange}
+                rows="6"
+                required
+                className={fieldErrors.content ? 'input-error' : ''}
+              />
+              {fieldErrors.content && <span className="field-error">{fieldErrors.content}</span>}
+            </div>
+
+            {editError && <p className="error-message">{editError}</p>}
+
+            <div className="edit-form-actions">
+              <button type="submit" className="save-button" disabled={isLoading}>
+                {isLoading ? 'Salvando...' : 'Salvar'}
+              </button>
+              <button type="button" className="cancel-button" onClick={handleCancelEdit}>
+                Cancelar
+              </button>
+            </div>
+          </form>
+        ) : (
+          <div className="post-content">
+            <h2>{postDetails.title || 'Sem título'}</h2>
+            <p className="post-text">{postDetails.content}</p>
+          </div>
+        )}
         <div className="post-footer">
           <div className="post-interactions">
             <button 
