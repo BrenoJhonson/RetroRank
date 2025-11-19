@@ -496,3 +496,42 @@ export const likePost = async (postId, isLike) => {
   
   return post
 }
+
+// Função para deletar um post
+export const deletePost = async (postId) => {
+  await delay(500)
+
+  const token = localStorage.getItem('token')
+  if (!token) {
+    throw new Error('Não autenticado')
+  }
+
+  const userId = token.split('_')[1] || '1'
+  const posts = getStorageData('retrorank_posts', [])
+  const post = posts.find(p => p.id === postId)
+
+  if (!post) {
+    throw new Error('Post não encontrado')
+  }
+
+  // Verificar se o usuário é o dono do post
+  if (post.creatorId !== userId) {
+    throw new Error('Você não tem permissão para deletar este post')
+  }
+
+  // Remover o post
+  const updatedPosts = posts.filter(p => p.id !== postId)
+  setStorageData('retrorank_posts', updatedPosts)
+
+  // Remover comentários do post
+  const comments = getStorageData('retrorank_comments', [])
+  const updatedComments = comments.filter(c => c.postId !== postId)
+  setStorageData('retrorank_comments', updatedComments)
+
+  // Remover interações do post
+  const userInteractions = getUserInteractions()
+  delete userInteractions[postId]
+  saveUserInteractions(userInteractions)
+
+  return { success: true }
+}

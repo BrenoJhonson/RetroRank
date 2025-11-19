@@ -2,12 +2,16 @@ import { useContext, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { GlobalContext } from '../context/GlobalState'
 import { getUserPostInteraction } from '../services/api'
+import { getCurrentUserId } from '../utils/auth'
 import './PostCard.css'
 
 function PostCard({ post }) {
   const navigate = useNavigate()
-  const { likePost, getPosts } = useContext(GlobalContext)
+  const { likePost, getPosts, deletePost } = useContext(GlobalContext)
   const [userInteraction, setUserInteraction] = useState(null)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const currentUserId = getCurrentUserId()
+  const isOwner = post.creatorId === currentUserId
 
   useEffect(() => {
     const interaction = getUserPostInteraction(post.id)
@@ -44,10 +48,46 @@ function PostCard({ post }) {
     }
   }
 
+  const handleDelete = async (event) => {
+    event.stopPropagation()
+    
+    const confirmed = window.confirm(
+      '⚠️ ATENÇÃO!\n\n' +
+      'Tem certeza que deseja excluir este post?\n\n' +
+      'Esta ação não pode ser desfeita e todos os comentários serão removidos permanentemente.'
+    )
+    
+    if (!confirmed) {
+      return
+    }
+
+    setIsDeleting(true)
+    try {
+      await deletePost(post.id)
+      await getPosts()
+    } catch (error) {
+      console.error('Erro ao deletar post:', error)
+      alert(error.message || 'Erro ao deletar post. Tente novamente.')
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
   return (
     <div className="post-card" onClick={handleCardClick}>
       <div className="post-header">
         <p className="post-author">Por: {post.creatorName}</p>
+        {isOwner && (
+          <button
+            className="delete-post-button"
+            onClick={handleDelete}
+            type="button"
+            disabled={isDeleting}
+            title="Excluir post"
+          >
+            {isDeleting ? 'Excluindo...' : 'Delete'}
+          </button>
+        )}
       </div>
       <div className="post-content">
         <h3>{post.title || 'Sem título'}</h3>

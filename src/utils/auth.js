@@ -35,3 +35,14 @@ export const clearAuth = () => {
   localStorage.removeItem(STORAGE_KEYS.TOKEN_TIMESTAMP)
 }
 
+// Obtém o ID do usuário atual a partir do token
+export const getCurrentUserId = () => {
+  const token = localStorage.getItem(STORAGE_KEYS.TOKEN)
+  if (!token) {
+    return null
+  }
+  // Token format: token_{userId}_{timestamp}
+  const userId = token.split('_')[1]
+  return userId || null
+}
+

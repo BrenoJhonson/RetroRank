@@ -152,6 +152,30 @@ export const GlobalState = ({ children }) => {
     }
   }, [])
 
+  // Função para deletar um post
+  const deletePost = useCallback(async (postId) => {
+    setIsLoading(true)
+    setError(null)
+    try {
+      await api.deletePost(postId)
+      // Remove o post da lista
+      setPosts(prevPosts => prevPosts.filter(post => post.id !== postId))
+      // Limpa postDetails se estiver visualizando o post deletado
+      setPostDetails(prevDetails => {
+        if (prevDetails && prevDetails.id === postId) {
+          return null
+        }
+        return prevDetails
+      })
+      setIsLoading(false)
+      return { success: true }
+    } catch (err) {
+      setError(err.message)
+      setIsLoading(false)
+      throw err
+    }
+  }, [])
+
   const contextValue = {
     posts,
     setPosts,
@@ -170,7 +194,8 @@ export const GlobalState = ({ children }) => {
     getPostById,
     getComments,
     createComment,
-    likePost
+    likePost,
+    deletePost
   }
 
   return (

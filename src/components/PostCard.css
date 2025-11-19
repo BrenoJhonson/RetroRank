@@ -16,6 +16,9 @@
 }
 
 .post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 1rem;
 }
 
@@ -24,6 +27,31 @@
   color: var(--retro-blue);
   font-weight: 500;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.delete-post-button {
+  background: rgba(255, 107, 107, 0.2);
+  border: 2px solid var(--retro-accent);
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--retro-light);
+  transition: all 0.3s;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.delete-post-button:hover {
+  background: rgba(255, 107, 107, 0.4);
+  border-color: var(--retro-accent);
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(255, 107, 107, 0.5);
+}
+
+.delete-post-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .post-content {
@@ -116,6 +144,18 @@
   .post-card {
     padding: 1rem;
     margin-bottom: 1rem;
+  }
+
+  .post-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .delete-post-button {
+    align-self: flex-end;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.8rem;
   }
 
   .post-content h3 {

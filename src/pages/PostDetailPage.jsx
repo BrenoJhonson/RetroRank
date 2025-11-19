@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { GlobalContext } from '../context/GlobalState'
 import useProtectedPage from '../hooks/useProtectedPage'
 import { getUserPostInteraction } from '../services/api'
+import { getCurrentUserId } from '../utils/auth'
 import CommentCard from '../components/CommentCard'
 import CreateCommentForm from '../components/CreateCommentForm'
 import Loading from '../components/Loading'
@@ -12,8 +13,11 @@ function PostDetailPage() {
   useProtectedPage()
   const { id } = useParams()
   const navigate = useNavigate()
-  const { postDetails, comments, getPostById, getComments, likePost, isLoading, error } = useContext(GlobalContext)
+  const { postDetails, comments, getPostById, getComments, likePost, deletePost, isLoading, error } = useContext(GlobalContext)
   const [userInteraction, setUserInteraction] = useState(null)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const currentUserId = getCurrentUserId()
+  const isOwner = postDetails?.creatorId === currentUserId
 
   useEffect(() => {
     if (id) {
@@ -43,6 +47,29 @@ function PostDetailPage() {
       setUserInteraction(newInteraction)
     } catch (error) {
       console.error('Erro ao dar dislike:', error)
+    }
+  }
+
+  const handleDelete = async () => {
+    const confirmed = window.confirm(
+      '⚠️ ATENÇÃO!\n\n' +
+      'Tem certeza que deseja excluir este post?\n\n' +
+      'Esta ação não pode ser desfeita e todos os comentários serão removidos permanentemente.'
+    )
+    
+    if (!confirmed) {
+      return
+    }
+
+    setIsDeleting(true)
+    try {
+      await deletePost(id)
+      navigate('/feed')
+    } catch (error) {
+      console.error('Erro ao deletar post:', error)
+      alert(error.message || 'Erro ao deletar post. Tente novamente.')
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -93,6 +120,17 @@ function PostDetailPage() {
       <div className="post-detail-card">
         <div className="post-header">
           <p className="post-author">Por: {postDetails.creatorName}</p>
+          {isOwner && (
+            <button
+              className="delete-post-button"
+              onClick={handleDelete}
+              type="button"
+              disabled={isDeleting}
+              title="Excluir post"
+            >
+              {isDeleting ? 'Excluindo...' : 'Delete'}
+            </button>
+          )}
         </div>
         <div className="post-content">
           <h2>{postDetails.title || 'Sem título'}</h2>
