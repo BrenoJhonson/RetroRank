@@ -60,34 +60,61 @@ function CreateCommentForm() {
   }
 
   return (
-    <div className="create-comment-form-container">
-      <h4>Deixe seu comentário</h4>
-      <form onSubmit={onSubmit} className="create-comment-form">
+    <section className="create-comment-form-container" aria-labelledby="create-comment-title">
+      <h4 id="create-comment-title">Deixe seu comentário</h4>
+      <form onSubmit={onSubmit} className="create-comment-form" aria-label="Formulário para criar comentário">
         <div className="form-group">
+          <label htmlFor="comment-content">Comentário</label>
           <textarea
-            id="content"
+            id="comment-content"
             name="content"
             value={form.content}
             onChange={handleInputChange}
             placeholder="Escreva seu comentário..."
             rows="3"
             required
+            aria-required="true"
+            aria-invalid={fieldErrors.content ? 'true' : 'false'}
+            aria-describedby={fieldErrors.content ? 'comment-error comment-counter' : 'comment-counter'}
             className={fieldErrors.content ? 'input-error' : ''}
           />
-          <div className={`char-counter char-counter-${contentStatus}`}>
+          <div 
+            id="comment-counter" 
+            className={`char-counter char-counter-${contentStatus}`}
+            aria-live="polite"
+            aria-atomic="true"
+          >
             {form.content.trim().length}/{MIN_CONTENT_LENGTH} caracteres mínimos
             {contentStatus === 'valid' && ' ✓'}
           </div>
-          {fieldErrors.content && <span className="field-error">{fieldErrors.content}</span>}
+          {fieldErrors.content && (
+            <span 
+              id="comment-error" 
+              className="field-error" 
+              role="alert"
+              aria-live="polite"
+            >
+              {fieldErrors.content}
+            </span>
+          )}
         </div>
 
-        {error && <p className="error-message">{error}</p>}
+        {error && (
+          <div className="error-message" role="alert" aria-live="assertive">
+            {error}
+          </div>
+        )}
 
-        <button type="submit" className="submit-button" disabled={isLoading}>
+        <button 
+          type="submit" 
+          className="submit-button" 
+          disabled={isLoading}
+          aria-label={isLoading ? 'Comentando...' : 'Publicar comentário'}
+        >
           {isLoading ? 'Comentando...' : 'Comentar'}
         </button>
       </form>
-    </div>
+    </section>
   )
 }
 

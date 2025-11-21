@@ -15,18 +15,29 @@ function ConfirmDialog({ isOpen, title, message, onConfirm, onCancel, confirmTex
     : message
 
   return (
-    <div className="confirm-dialog-overlay" onClick={onCancel}>
-      <div className="confirm-dialog" onClick={(e) => e.stopPropagation()}>
+    <div 
+      className="confirm-dialog-overlay" 
+      onClick={onCancel}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="confirm-dialog-title"
+      aria-describedby="confirm-dialog-message"
+    >
+      <div 
+        className="confirm-dialog" 
+        onClick={(e) => e.stopPropagation()}
+        role="document"
+      >
         <div className={`confirm-dialog-header confirm-dialog-${type}`}>
-          <span className="confirm-dialog-icon">
+          <span className="confirm-dialog-icon" aria-hidden="true">
             {type === 'warning' && '⚠️'}
             {type === 'danger' && '🗑️'}
             {type === 'info' && 'ℹ️'}
           </span>
-          <h3 className="confirm-dialog-title">{title}</h3>
+          <h3 id="confirm-dialog-title" className="confirm-dialog-title">{title}</h3>
         </div>
         <div className="confirm-dialog-body">
-          <div className="confirm-dialog-message">
+          <div id="confirm-dialog-message" className="confirm-dialog-message">
             {processedMessage}
           </div>
         </div>
@@ -34,12 +45,15 @@ function ConfirmDialog({ isOpen, title, message, onConfirm, onCancel, confirmTex
           <button
             className="confirm-dialog-button confirm-dialog-button-cancel"
             onClick={onCancel}
+            aria-label={cancelText}
           >
             {cancelText}
           </button>
           <button
             className={`confirm-dialog-button confirm-dialog-button-confirm confirm-dialog-button-${type}`}
             onClick={onConfirm}
+            aria-label={confirmText}
+            autoFocus
           >
             {confirmText}
           </button>

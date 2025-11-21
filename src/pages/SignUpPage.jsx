@@ -67,12 +67,12 @@ function SignUpPage() {
   }
 
   return (
-    <div className="signup-page">
+    <main className="signup-page">
       <div className="signup-container">
-        <h2>Cadastro</h2>
+        <h1>Cadastro</h1>
         <p className="subtitle">Junte-se à comunidade RetroRank</p>
         
-        <form onSubmit={onSubmit} className="signup-form">
+        <form onSubmit={onSubmit} className="signup-form" aria-label="Formulário de cadastro">
           <div className="form-group">
             <label htmlFor="name">Nome</label>
             <input
@@ -83,9 +83,21 @@ function SignUpPage() {
               onChange={handleInputChange}
               placeholder="Seu nome"
               required
+              aria-required="true"
+              aria-invalid={fieldErrors.name ? 'true' : 'false'}
+              aria-describedby={fieldErrors.name ? 'name-error' : undefined}
               className={fieldErrors.name ? 'input-error' : ''}
             />
-            {fieldErrors.name && <span className="field-error">{fieldErrors.name}</span>}
+            {fieldErrors.name && (
+              <span 
+                id="name-error" 
+                className="field-error" 
+                role="alert"
+                aria-live="polite"
+              >
+                {fieldErrors.name}
+              </span>
+            )}
           </div>
 
           <div className="form-group">
@@ -98,9 +110,21 @@ function SignUpPage() {
               onChange={handleInputChange}
               placeholder="seu@email.com"
               required
+              aria-required="true"
+              aria-invalid={fieldErrors.email ? 'true' : 'false'}
+              aria-describedby={fieldErrors.email ? 'email-error' : undefined}
               className={fieldErrors.email ? 'input-error' : ''}
             />
-            {fieldErrors.email && <span className="field-error">{fieldErrors.email}</span>}
+            {fieldErrors.email && (
+              <span 
+                id="email-error" 
+                className="field-error" 
+                role="alert"
+                aria-live="polite"
+              >
+                {fieldErrors.email}
+              </span>
+            )}
           </div>
 
           <div className="form-group">
@@ -114,23 +138,44 @@ function SignUpPage() {
               placeholder="Digite sua senha"
               required
               minLength={6}
+              aria-required="true"
+              aria-invalid={fieldErrors.password ? 'true' : 'false'}
+              aria-describedby={fieldErrors.password ? 'password-error' : undefined}
               className={fieldErrors.password ? 'input-error' : ''}
             />
-            {fieldErrors.password && <span className="field-error">{fieldErrors.password}</span>}
+            {fieldErrors.password && (
+              <span 
+                id="password-error" 
+                className="field-error" 
+                role="alert"
+                aria-live="polite"
+              >
+                {fieldErrors.password}
+              </span>
+            )}
           </div>
 
-          {error && <p className="error-message">{error}</p>}
+          {error && (
+            <div className="error-message" role="alert" aria-live="assertive">
+              {error}
+            </div>
+          )}
 
-          <button type="submit" className="submit-button" disabled={isLoading}>
+          <button 
+            type="submit" 
+            className="submit-button" 
+            disabled={isLoading}
+            aria-label={isLoading ? 'Cadastrando...' : 'Criar conta'}
+          >
             {isLoading ? 'Cadastrando...' : 'Cadastrar'}
           </button>
         </form>
 
         <p className="login-link">
-          Já tem uma conta? <a href="/login">Faça login</a>
+          Já tem uma conta? <a href="/login" aria-label="Ir para página de login">Faça login</a>
         </p>
       </div>
-    </div>
+    </main>
   )
 }
 

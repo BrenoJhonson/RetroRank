@@ -55,12 +55,12 @@ function LoginPage() {
   }
 
   return (
-    <div className="login-page">
+    <main className="login-page">
       <div className="login-container">
-        <h2>Login</h2>
+        <h1>Login</h1>
         <p className="subtitle">Entre na comunidade RetroRank</p>
         
-        <form onSubmit={onSubmit} className="login-form">
+        <form onSubmit={onSubmit} className="login-form" aria-label="Formulário de login">
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
@@ -71,9 +71,21 @@ function LoginPage() {
               onChange={handleInputChange}
               placeholder="seu@email.com"
               required
+              aria-required="true"
+              aria-invalid={fieldErrors.email ? 'true' : 'false'}
+              aria-describedby={fieldErrors.email ? 'email-error' : undefined}
               className={fieldErrors.email ? 'input-error' : ''}
             />
-            {fieldErrors.email && <span className="field-error">{fieldErrors.email}</span>}
+            {fieldErrors.email && (
+              <span 
+                id="email-error" 
+                className="field-error" 
+                role="alert"
+                aria-live="polite"
+              >
+                {fieldErrors.email}
+              </span>
+            )}
           </div>
 
           <div className="form-group">
@@ -86,23 +98,44 @@ function LoginPage() {
               onChange={handleInputChange}
               placeholder="Digite sua senha"
               required
+              aria-required="true"
+              aria-invalid={fieldErrors.password ? 'true' : 'false'}
+              aria-describedby={fieldErrors.password ? 'password-error' : undefined}
               className={fieldErrors.password ? 'input-error' : ''}
             />
-            {fieldErrors.password && <span className="field-error">{fieldErrors.password}</span>}
+            {fieldErrors.password && (
+              <span 
+                id="password-error" 
+                className="field-error" 
+                role="alert"
+                aria-live="polite"
+              >
+                {fieldErrors.password}
+              </span>
+            )}
           </div>
 
-          {error && <p className="error-message">{error}</p>}
+          {error && (
+            <div className="error-message" role="alert" aria-live="assertive">
+              {error}
+            </div>
+          )}
 
-          <button type="submit" className="submit-button" disabled={isLoading}>
+          <button 
+            type="submit" 
+            className="submit-button" 
+            disabled={isLoading}
+            aria-label={isLoading ? 'Entrando...' : 'Fazer login'}
+          >
             {isLoading ? 'Entrando...' : 'Entrar'}
           </button>
         </form>
 
         <p className="signup-link">
-          Não tem uma conta? <a href="/signup">Cadastre-se</a>
+          Não tem uma conta? <a href="/signup" aria-label="Ir para página de cadastro">Cadastre-se</a>
         </p>
       </div>
-    </div>
+    </main>
   )
 }
 

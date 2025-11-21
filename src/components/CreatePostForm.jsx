@@ -67,9 +67,9 @@ function CreatePostForm() {
   }
 
   return (
-    <div className="create-post-form-container">
-      <h3>Criar Novo Post</h3>
-      <form onSubmit={onSubmit} className="create-post-form">
+    <section className="create-post-form-container" aria-labelledby="create-post-title">
+      <h3 id="create-post-title">Criar Novo Post</h3>
+      <form onSubmit={onSubmit} className="create-post-form" aria-label="Formulário para criar novo post">
         <div className="form-group">
           <label htmlFor="title">Título</label>
           <input
@@ -80,13 +80,30 @@ function CreatePostForm() {
             onChange={handleInputChange}
             placeholder="Ex: Top 5 jogos do Super Nintendo"
             required
+            aria-required="true"
+            aria-invalid={fieldErrors.title ? 'true' : 'false'}
+            aria-describedby={fieldErrors.title ? 'title-error title-counter' : 'title-counter'}
             className={fieldErrors.title ? 'input-error' : ''}
           />
-          <div className={`char-counter char-counter-${titleStatus}`}>
+          <div 
+            id="title-counter" 
+            className={`char-counter char-counter-${titleStatus}`}
+            aria-live="polite"
+            aria-atomic="true"
+          >
             {form.title.trim().length}/{MIN_TITLE_LENGTH} caracteres mínimos
             {titleStatus === 'valid' && ' ✓'}
           </div>
-          {fieldErrors.title && <span className="field-error">{fieldErrors.title}</span>}
+          {fieldErrors.title && (
+            <span 
+              id="title-error" 
+              className="field-error" 
+              role="alert"
+              aria-live="polite"
+            >
+              {fieldErrors.title}
+            </span>
+          )}
         </div>
 
         <div className="form-group">
@@ -99,22 +116,48 @@ function CreatePostForm() {
             placeholder="Compartilhe seus pensamentos sobre jogos clássicos..."
             rows="4"
             required
+            aria-required="true"
+            aria-invalid={fieldErrors.content ? 'true' : 'false'}
+            aria-describedby={fieldErrors.content ? 'content-error content-counter' : 'content-counter'}
             className={fieldErrors.content ? 'input-error' : ''}
           />
-          <div className={`char-counter char-counter-${contentStatus}`}>
+          <div 
+            id="content-counter" 
+            className={`char-counter char-counter-${contentStatus}`}
+            aria-live="polite"
+            aria-atomic="true"
+          >
             {form.content.trim().length}/{MIN_CONTENT_LENGTH} caracteres mínimos
             {contentStatus === 'valid' && ' ✓'}
           </div>
-          {fieldErrors.content && <span className="field-error">{fieldErrors.content}</span>}
+          {fieldErrors.content && (
+            <span 
+              id="content-error" 
+              className="field-error" 
+              role="alert"
+              aria-live="polite"
+            >
+              {fieldErrors.content}
+            </span>
+          )}
         </div>
 
-        {error && <p className="error-message">{error}</p>}
+        {error && (
+          <div className="error-message" role="alert" aria-live="assertive">
+            {error}
+          </div>
+        )}
 
-        <button type="submit" className="submit-button" disabled={isLoading}>
+        <button 
+          type="submit" 
+          className="submit-button" 
+          disabled={isLoading}
+          aria-label={isLoading ? 'Publicando post...' : 'Publicar post'}
+        >
           {isLoading ? 'Publicando...' : 'Publicar'}
         </button>
       </form>
-    </div>
+    </section>
   )
 }
 

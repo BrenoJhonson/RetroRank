@@ -45,13 +45,20 @@ function CommentCard({ comment }) {
 
   return (
     <>
-      <div className="comment-card">
+      <article 
+        className="comment-card"
+        aria-label={`Comentário de ${comment.creatorName}`}
+      >
         <div className="comment-header">
           <div className="comment-header-info">
             <p className="comment-author">{comment.creatorName}</p>
-            <p className="comment-date" title={comment.createdAt ? new Date(comment.createdAt).toLocaleString('pt-BR') : ''}>
+            <time 
+              className="comment-date" 
+              dateTime={comment.createdAt}
+              title={comment.createdAt ? new Date(comment.createdAt).toLocaleString('pt-BR') : ''}
+            >
               {formatRelativeTime(comment.createdAt)}
-            </p>
+            </time>
           </div>
           {isOwner && (
             <button
@@ -59,6 +66,7 @@ function CommentCard({ comment }) {
               onClick={handleDeleteClick}
               type="button"
               disabled={isDeleting}
+              aria-label={isDeleting ? 'Excluindo comentário...' : 'Excluir comentário'}
               title="Excluir comentário"
             >
               {isDeleting ? 'Excluindo...' : 'Delete'}
@@ -68,7 +76,7 @@ function CommentCard({ comment }) {
         <div className="comment-content">
           <p>{comment.content}</p>
         </div>
-      </div>
+      </article>
 
       <ConfirmDialog
         isOpen={showConfirmDialog}

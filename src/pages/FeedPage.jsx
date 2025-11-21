@@ -111,16 +111,20 @@ function FeedPage() {
   }, [loadMorePosts, isLoadingMore, visiblePostsCount, filteredAndSortedPosts.length])
 
   return (
-    <div className="feed-page">
-      <div className="feed-header">
+    <main className="feed-page">
+      <header className="feed-header">
         <div>
-          <h2>Feed RetroRank</h2>
+          <h1>Feed RetroRank</h1>
           <p className="feed-subtitle">Explore os melhores posts sobre jogos clássicos</p>
         </div>
-        <button className="logout-button" onClick={handleLogout}>
+        <button 
+          className="logout-button" 
+          onClick={handleLogout}
+          aria-label="Sair da conta"
+        >
           Sair
         </button>
-      </div>
+      </header>
 
       <CreatePostForm />
 
@@ -128,12 +132,15 @@ function FeedPage() {
       {!isLoading && !error && posts.length > 0 && (
         <div className="search-filters-container">
           <div className="search-bar">
+            <label htmlFor="search-input" className="sr-only">Buscar posts</label>
             <input
-              type="text"
-              placeholder="🔍 Buscar posts, títulos ou autores..."
+              id="search-input"
+              type="search"
+              placeholder="Buscar posts, títulos ou autores..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="search-input"
+              aria-label="Buscar posts, títulos ou autores"
             />
           </div>
 
@@ -156,6 +163,7 @@ function FeedPage() {
               <button
                 className="clear-filters-button"
                 onClick={() => setSearchTerm('')}
+                aria-label="Limpar busca"
               >
                 Limpar busca
               </button>
@@ -163,7 +171,7 @@ function FeedPage() {
           </div>
 
           {filteredAndSortedPosts.length !== posts.length && (
-            <p className="filter-results">
+            <p className="filter-results" aria-live="polite" aria-atomic="true">
               Mostrando {filteredAndSortedPosts.length} de {posts.length} posts
             </p>
           )}
@@ -173,9 +181,13 @@ function FeedPage() {
       {isLoading ? (
         <Loading />
       ) : error ? (
-        <div className="error-container">
+        <div className="error-container" role="alert">
           <p className="error-message">{error}</p>
-          <button className="retry-button" onClick={() => getPosts()}>
+          <button 
+            className="retry-button" 
+            onClick={() => getPosts()}
+            aria-label="Tentar carregar posts novamente"
+          >
             Tentar novamente
           </button>
         </div>
@@ -219,7 +231,7 @@ function FeedPage() {
           )}
         </div>
       )}
-    </div>
+    </main>
   )
 }
 

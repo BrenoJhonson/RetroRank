@@ -190,17 +190,25 @@ function PostDetailPage() {
   if (error) {
     return (
       <div className="post-detail-page">
-        <div className="error-container">
+        <div className="error-container" role="alert">
           <p className="error-message">{error}</p>
-          <button className="retry-button" onClick={() => {
-            if (id) {
-              getPostById(id)
-              getComments(id)
-            }
-          }}>
+          <button 
+            className="retry-button" 
+            onClick={() => {
+              if (id) {
+                getPostById(id)
+                getComments(id)
+              }
+            }}
+            aria-label="Tentar carregar post novamente"
+          >
             Tentar novamente
           </button>
-          <button className="back-button" onClick={() => navigate('/feed')}>
+          <button 
+            className="back-button" 
+            onClick={() => navigate('/feed')}
+            aria-label="Voltar para o Feed"
+          >
             Voltar para o Feed
           </button>
         </div>
@@ -211,9 +219,13 @@ function PostDetailPage() {
   if (!postDetails) {
     return (
       <div className="post-detail-page">
-        <div className="error-container">
+        <div className="error-container" role="alert">
           <p className="error-message">Post não encontrado</p>
-          <button className="back-button" onClick={() => navigate('/feed')}>
+          <button 
+            className="back-button" 
+            onClick={() => navigate('/feed')}
+            aria-label="Voltar para o Feed"
+          >
             Voltar para o Feed
           </button>
         </div>
@@ -222,21 +234,33 @@ function PostDetailPage() {
   }
 
   return (
-    <div className="post-detail-page">
-      <button className="back-button" onClick={() => navigate('/feed')}>
+    <main className="post-detail-page">
+      <button 
+        className="back-button" 
+        onClick={() => navigate('/feed')}
+        aria-label="Voltar para o Feed"
+      >
         ← Voltar para o Feed
       </button>
 
-      <div className="post-detail-card">
+      <article className="post-detail-card" aria-label={`Post: ${postDetails.title || 'Sem título'}`}>
         <div className="post-header">
           <div className="post-header-info">
             <p className="post-author">Por: {postDetails.creatorName}</p>
             <div className="post-meta">
-              <p className="post-date" title={postDetails.createdAt ? formatFullDateTime(postDetails.createdAt) : ''}>
+              <time 
+                className="post-date" 
+                dateTime={postDetails.createdAt}
+                title={postDetails.createdAt ? formatFullDateTime(postDetails.createdAt) : ''}
+              >
                 {formatRelativeTime(postDetails.createdAt)}
-              </p>
+              </time>
               {postDetails.updatedAt && postDetails.updatedAt !== postDetails.createdAt && (
-                <span className="post-edited-badge" title={`Editado em ${formatFullDateTime(postDetails.updatedAt)}`}>
+                <span 
+                  className="post-edited-badge" 
+                  title={`Editado em ${formatFullDateTime(postDetails.updatedAt)}`}
+                  aria-label={`Post editado em ${formatRelativeTime(postDetails.updatedAt)}`}
+                >
                   Editado {formatRelativeTime(postDetails.updatedAt)}
                 </span>
               )}
@@ -248,6 +272,7 @@ function PostDetailPage() {
                 className="edit-post-button"
                 onClick={handleEdit}
                 type="button"
+                aria-label={`Editar post: ${postDetails.title || 'Sem título'}`}
                 title="Editar post"
               >
                 Editar
@@ -257,6 +282,7 @@ function PostDetailPage() {
                 onClick={handleDeleteClick}
                 type="button"
                 disabled={isDeleting}
+                aria-label={isDeleting ? 'Excluindo post...' : `Excluir post: ${postDetails.title || 'Sem título'}`}
                 title="Excluir post"
               >
                 {isDeleting ? 'Excluindo...' : 'Delete'}
@@ -275,13 +301,30 @@ function PostDetailPage() {
                 value={editForm.title}
                 onChange={handleEditInputChange}
                 required
+                aria-required="true"
+                aria-invalid={fieldErrors.title ? 'true' : 'false'}
+                aria-describedby={fieldErrors.title ? 'edit-title-error edit-title-counter' : 'edit-title-counter'}
                 className={fieldErrors.title ? 'input-error' : ''}
               />
-              <div className={`char-counter char-counter-${titleStatus}`}>
+              <div 
+                id="edit-title-counter" 
+                className={`char-counter char-counter-${titleStatus}`}
+                aria-live="polite"
+                aria-atomic="true"
+              >
                 {editForm.title.trim().length}/{MIN_TITLE_LENGTH} caracteres mínimos
                 {titleStatus === 'valid' && ' ✓'}
               </div>
-              {fieldErrors.title && <span className="field-error">{fieldErrors.title}</span>}
+              {fieldErrors.title && (
+                <span 
+                  id="edit-title-error" 
+                  className="field-error" 
+                  role="alert"
+                  aria-live="polite"
+                >
+                  {fieldErrors.title}
+                </span>
+              )}
             </div>
 
             <div className="form-group">
@@ -293,22 +336,53 @@ function PostDetailPage() {
                 onChange={handleEditInputChange}
                 rows="6"
                 required
+                aria-required="true"
+                aria-invalid={fieldErrors.content ? 'true' : 'false'}
+                aria-describedby={fieldErrors.content ? 'edit-content-error edit-content-counter' : 'edit-content-counter'}
                 className={fieldErrors.content ? 'input-error' : ''}
               />
-              <div className={`char-counter char-counter-${contentStatus}`}>
+              <div 
+                id="edit-content-counter" 
+                className={`char-counter char-counter-${contentStatus}`}
+                aria-live="polite"
+                aria-atomic="true"
+              >
                 {editForm.content.trim().length}/{MIN_CONTENT_LENGTH} caracteres mínimos
                 {contentStatus === 'valid' && ' ✓'}
               </div>
-              {fieldErrors.content && <span className="field-error">{fieldErrors.content}</span>}
+              {fieldErrors.content && (
+                <span 
+                  id="edit-content-error" 
+                  className="field-error" 
+                  role="alert"
+                  aria-live="polite"
+                >
+                  {fieldErrors.content}
+                </span>
+              )}
             </div>
 
-            {editError && <p className="error-message">{editError}</p>}
+            {editError && (
+              <div className="error-message" role="alert" aria-live="assertive">
+                {editError}
+              </div>
+            )}
 
             <div className="edit-form-actions">
-              <button type="submit" className="save-button" disabled={isLoading}>
+              <button 
+                type="submit" 
+                className="save-button" 
+                disabled={isLoading}
+                aria-label={isLoading ? 'Salvando alterações...' : 'Salvar alterações do post'}
+              >
                 {isLoading ? 'Salvando...' : 'Salvar'}
               </button>
-              <button type="button" className="cancel-button" onClick={handleCancelEdit}>
+              <button 
+                type="button" 
+                className="cancel-button" 
+                onClick={handleCancelEdit}
+                aria-label="Cancelar edição do post"
+              >
                 Cancelar
               </button>
             </div>
@@ -323,8 +397,10 @@ function PostDetailPage() {
           <div className="post-interactions">
             <button 
               className={`like-button ${userInteraction === 'like' ? 'active' : ''}`}
-              onClick={handleLike}
+              onClick={handleLike} 
               type="button"
+              aria-label={`Gostei. ${postDetails.likes || 0} ${postDetails.likes === 1 ? 'curtida' : 'curtidas'}. ${userInteraction === 'like' ? 'Você já curtiu este post' : 'Clique para curtir'}`}
+              aria-pressed={userInteraction === 'like'}
             >
               Gostei {postDetails.likes || 0}
             </button>
@@ -332,15 +408,17 @@ function PostDetailPage() {
               className={`dislike-button ${userInteraction === 'dislike' ? 'active' : ''}`}
               onClick={handleDislike}
               type="button"
+              aria-label={`Não Gostei. ${postDetails.dislikes || 0} ${postDetails.dislikes === 1 ? 'não curtida' : 'não curtidas'}. ${userInteraction === 'dislike' ? 'Você já não curtiu este post' : 'Clique para não curtir'}`}
+              aria-pressed={userInteraction === 'dislike'}
             >
               Não Gostei {postDetails.dislikes || 0}
             </button>
           </div>
         </div>
-      </div>
+      </article>
 
-      <div className="comments-section">
-        <h3>Comentários ({comments.length})</h3>
+      <section className="comments-section" aria-labelledby="comments-title">
+        <h3 id="comments-title">Comentários ({comments.length})</h3>
         
         <CreateCommentForm />
 
@@ -353,7 +431,7 @@ function PostDetailPage() {
             ))}
           </div>
         )}
-      </div>
+      </section>
 
       <ConfirmDialog
         isOpen={showConfirmDialog}
@@ -369,7 +447,7 @@ Esta ação não pode ser desfeita e todos os comentários serão removidos perm
         cancelText="Cancelar"
         type="danger"
       />
-    </div>
+    </main>
   )
 }
 

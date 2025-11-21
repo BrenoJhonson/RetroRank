@@ -27,6 +27,13 @@ function PostCard({ post }) {
     navigate(`/post/${post.id}`)
   }
 
+  const handleCardKeyDown = (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      navigate(`/post/${post.id}`)
+    }
+  }
+
   const handleLike = async (event) => {
     event.stopPropagation()
     try {
@@ -79,15 +86,30 @@ function PostCard({ post }) {
 
   return (
     <>
-      <div className="post-card" onClick={handleCardClick}>
+      <article 
+        className="post-card" 
+        onClick={handleCardClick}
+        onKeyDown={handleCardKeyDown}
+        tabIndex={0}
+        role="article"
+        aria-label={`Post: ${post.title || 'Sem título'} por ${post.creatorName}`}
+      >
         <div className="post-header">
           <div className="post-header-info">
             <p className="post-author">Por: {post.creatorName}</p>
-            <p className="post-date" title={post.createdAt ? new Date(post.createdAt).toLocaleString('pt-BR') : ''}>
+            <time 
+              className="post-date" 
+              dateTime={post.createdAt}
+              title={post.createdAt ? new Date(post.createdAt).toLocaleString('pt-BR') : ''}
+            >
               {formatRelativeTime(post.createdAt)}
-            </p>
+            </time>
             {post.updatedAt && post.updatedAt !== post.createdAt && (
-              <span className="post-edited-badge" title={`Editado em ${new Date(post.updatedAt).toLocaleString('pt-BR')}`}>
+              <span 
+                className="post-edited-badge" 
+                title={`Editado em ${new Date(post.updatedAt).toLocaleString('pt-BR')}`}
+                aria-label={`Post editado em ${formatRelativeTime(post.updatedAt)}`}
+              >
                 Editado
               </span>
             )}
@@ -98,38 +120,43 @@ function PostCard({ post }) {
               onClick={handleDeleteClick}
               type="button"
               disabled={isDeleting}
+              aria-label={isDeleting ? 'Excluindo post...' : `Excluir post: ${post.title || 'Sem título'}`}
               title="Excluir post"
             >
               {isDeleting ? 'Excluindo...' : 'Delete'}
             </button>
           )}
         </div>
-      <div className="post-content">
-        <h3>{post.title || 'Sem título'}</h3>
-        <p>{post.content}</p>
-      </div>
-      <div className="post-footer">
-        <div className="post-interactions">
-          <button 
-            className={`like-button ${userInteraction === 'like' ? 'active' : ''}`}
-            onClick={handleLike}
-            type="button"
-          >
-            Gostei {post.likes || 0}
-          </button>
-          <button 
-            className={`dislike-button ${userInteraction === 'dislike' ? 'active' : ''}`}
-            onClick={handleDislike}
-            type="button"
-          >
-            Não Gostei {post.dislikes || 0}
-          </button>
+        <div className="post-content">
+          <h3>{post.title || 'Sem título'}</h3>
+          <p>{post.content}</p>
         </div>
-        <p className="post-comments">
-          {post.commentsCount || 0} comentários
-        </p>
-      </div>
-    </div>
+        <div className="post-footer">
+          <div className="post-interactions" role="group" aria-label="Interações do post">
+            <button 
+              className={`like-button ${userInteraction === 'like' ? 'active' : ''}`}
+              onClick={handleLike}
+              type="button"
+              aria-label={`Gostei. ${post.likes || 0} ${post.likes === 1 ? 'curtida' : 'curtidas'}. ${userInteraction === 'like' ? 'Você já curtiu este post' : 'Clique para curtir'}`}
+              aria-pressed={userInteraction === 'like'}
+            >
+              Gostei {post.likes || 0}
+            </button>
+            <button 
+              className={`dislike-button ${userInteraction === 'dislike' ? 'active' : ''}`}
+              onClick={handleDislike}
+              type="button"
+              aria-label={`Não Gostei. ${post.dislikes || 0} ${post.dislikes === 1 ? 'não curtida' : 'não curtidas'}. ${userInteraction === 'dislike' ? 'Você já não curtiu este post' : 'Clique para não curtir'}`}
+              aria-pressed={userInteraction === 'dislike'}
+            >
+              Não Gostei {post.dislikes || 0}
+            </button>
+          </div>
+          <p className="post-comments" aria-label={`${post.commentsCount || 0} ${post.commentsCount === 1 ? 'comentário' : 'comentários'}`}>
+            {post.commentsCount || 0} comentários
+          </p>
+        </div>
+      </article>
 
     <ConfirmDialog
       isOpen={showConfirmDialog}
