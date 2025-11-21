@@ -233,11 +233,11 @@ function PostDetailPage() {
             <p className="post-author">Por: {postDetails.creatorName}</p>
             <div className="post-meta">
               <p className="post-date" title={postDetails.createdAt ? formatFullDateTime(postDetails.createdAt) : ''}>
-                📅 {formatRelativeTime(postDetails.createdAt)}
+                {formatRelativeTime(postDetails.createdAt)}
               </p>
               {postDetails.updatedAt && postDetails.updatedAt !== postDetails.createdAt && (
                 <span className="post-edited-badge" title={`Editado em ${formatFullDateTime(postDetails.updatedAt)}`}>
-                  ✏️ Editado {formatRelativeTime(postDetails.updatedAt)}
+                  Editado {formatRelativeTime(postDetails.updatedAt)}
                 </span>
               )}
             </div>
@@ -323,24 +323,24 @@ function PostDetailPage() {
           <div className="post-interactions">
             <button 
               className={`like-button ${userInteraction === 'like' ? 'active' : ''}`}
-              onClick={handleLike} 
+              onClick={handleLike}
               type="button"
             >
-              👍 {postDetails.likes || 0}
+              Gostei {postDetails.likes || 0}
             </button>
             <button 
               className={`dislike-button ${userInteraction === 'dislike' ? 'active' : ''}`}
-              onClick={handleDislike} 
+              onClick={handleDislike}
               type="button"
             >
-              👎 {postDetails.dislikes || 0}
+              Não Gostei {postDetails.dislikes || 0}
             </button>
           </div>
         </div>
       </div>
 
       <div className="comments-section">
-        <h3>💬 Comentários ({comments.length})</h3>
+        <h3>Comentários ({comments.length})</h3>
         
         <CreateCommentForm />
 
@@ -358,7 +358,7 @@ function PostDetailPage() {
       <ConfirmDialog
         isOpen={showConfirmDialog}
         title="Excluir Post"
-        message={`⚠️ ATENÇÃO!
+        message={`ATENÇÃO!
 
 Tem certeza que deseja excluir este post?
 

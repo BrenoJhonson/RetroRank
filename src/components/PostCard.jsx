@@ -88,7 +88,7 @@ function PostCard({ post }) {
             </p>
             {post.updatedAt && post.updatedAt !== post.createdAt && (
               <span className="post-edited-badge" title={`Editado em ${new Date(post.updatedAt).toLocaleString('pt-BR')}`}>
-                ✏️ Editado
+                Editado
               </span>
             )}
           </div>
@@ -115,18 +115,18 @@ function PostCard({ post }) {
             onClick={handleLike}
             type="button"
           >
-            👍 {post.likes || 0}
+            Gostei {post.likes || 0}
           </button>
           <button 
             className={`dislike-button ${userInteraction === 'dislike' ? 'active' : ''}`}
             onClick={handleDislike}
             type="button"
           >
-            👎 {post.dislikes || 0}
+            Não Gostei {post.dislikes || 0}
           </button>
         </div>
         <p className="post-comments">
-          💬 {post.commentsCount || 0} comentários
+          {post.commentsCount || 0} comentários
         </p>
       </div>
     </div>
@@ -134,7 +134,7 @@ function PostCard({ post }) {
     <ConfirmDialog
       isOpen={showConfirmDialog}
       title="Excluir Post"
-      message={`⚠️ ATENÇÃO!
+      message={`ATENÇÃO!
 
 Tem certeza que deseja excluir este post?
 

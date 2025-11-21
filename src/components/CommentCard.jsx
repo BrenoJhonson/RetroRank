@@ -73,7 +73,7 @@ function CommentCard({ comment }) {
       <ConfirmDialog
         isOpen={showConfirmDialog}
         title="Excluir Comentário"
-        message={`⚠️ ATENÇÃO!
+        message={`ATENÇÃO!
 
 Tem certeza que deseja excluir este comentário?
 
