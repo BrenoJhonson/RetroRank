@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { GlobalContext } from '../context/GlobalState'
 import { useToast } from '../context/ToastContext'
 import { getCurrentUserId } from '../utils/auth'
+import { formatRelativeTime } from '../utils/dateFormatter'
 import ConfirmDialog from './ConfirmDialog'
 import './CommentCard.css'
 
@@ -48,8 +49,8 @@ function CommentCard({ comment }) {
         <div className="comment-header">
           <div className="comment-header-info">
             <p className="comment-author">{comment.creatorName}</p>
-            <p className="comment-date">
-              {new Date(comment.createdAt).toLocaleDateString('pt-BR')}
+            <p className="comment-date" title={comment.createdAt ? new Date(comment.createdAt).toLocaleString('pt-BR') : ''}>
+              {formatRelativeTime(comment.createdAt)}
             </p>
           </div>
           {isOwner && (

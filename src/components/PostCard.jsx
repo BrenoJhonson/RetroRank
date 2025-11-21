@@ -4,6 +4,7 @@ import { GlobalContext } from '../context/GlobalState'
 import { useToast } from '../context/ToastContext'
 import { getUserPostInteraction } from '../services/api'
 import { getCurrentUserId } from '../utils/auth'
+import { formatRelativeTime } from '../utils/dateFormatter'
 import ConfirmDialog from './ConfirmDialog'
 import './PostCard.css'
 
@@ -80,7 +81,17 @@ function PostCard({ post }) {
     <>
       <div className="post-card" onClick={handleCardClick}>
         <div className="post-header">
-          <p className="post-author">Por: {post.creatorName}</p>
+          <div className="post-header-info">
+            <p className="post-author">Por: {post.creatorName}</p>
+            <p className="post-date" title={post.createdAt ? new Date(post.createdAt).toLocaleString('pt-BR') : ''}>
+              {formatRelativeTime(post.createdAt)}
+            </p>
+            {post.updatedAt && post.updatedAt !== post.createdAt && (
+              <span className="post-edited-badge" title={`Editado em ${new Date(post.updatedAt).toLocaleString('pt-BR')}`}>
+                ✏️ Editado
+              </span>
+            )}
+          </div>
           {isOwner && (
             <button
               className="delete-post-button"

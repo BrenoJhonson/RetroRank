@@ -35,8 +35,16 @@
 .post-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.post-header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1;
 }
 
 .post-author {
@@ -44,6 +52,35 @@
   color: var(--retro-blue);
   font-weight: 500;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  margin: 0;
+}
+
+.post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.post-date {
+  font-size: 0.85rem;
+  color: var(--retro-blue);
+  opacity: 0.9;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  margin: 0;
+  cursor: help;
+}
+
+.post-edited-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  color: var(--retro-accent-secondary);
+  background: rgba(78, 205, 196, 0.15);
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  border: 1px solid rgba(78, 205, 196, 0.3);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  cursor: help;
 }
 
 .post-actions {
@@ -387,6 +424,25 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 0.75rem;
+  }
+
+  .post-header-info {
+    width: 100%;
+  }
+
+  .post-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .post-date {
+    font-size: 0.8rem;
+  }
+
+  .post-edited-badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
   }
 
   .delete-post-button {

@@ -5,6 +5,7 @@ import { useToast } from '../context/ToastContext'
 import useProtectedPage from '../hooks/useProtectedPage'
 import { getUserPostInteraction } from '../services/api'
 import { getCurrentUserId } from '../utils/auth'
+import { formatRelativeTime, formatFullDateTime } from '../utils/dateFormatter'
 import CommentCard from '../components/CommentCard'
 import CreateCommentForm from '../components/CreateCommentForm'
 import ConfirmDialog from '../components/ConfirmDialog'
@@ -215,7 +216,19 @@ function PostDetailPage() {
 
       <div className="post-detail-card">
         <div className="post-header">
-          <p className="post-author">Por: {postDetails.creatorName}</p>
+          <div className="post-header-info">
+            <p className="post-author">Por: {postDetails.creatorName}</p>
+            <div className="post-meta">
+              <p className="post-date" title={postDetails.createdAt ? formatFullDateTime(postDetails.createdAt) : ''}>
+                📅 {formatRelativeTime(postDetails.createdAt)}
+              </p>
+              {postDetails.updatedAt && postDetails.updatedAt !== postDetails.createdAt && (
+                <span className="post-edited-badge" title={`Editado em ${formatFullDateTime(postDetails.updatedAt)}`}>
+                  ✏️ Editado {formatRelativeTime(postDetails.updatedAt)}
+                </span>
+              )}
+            </div>
+          </div>
           {isOwner && !isEditing && (
             <div className="post-actions">
               <button
