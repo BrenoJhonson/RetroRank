@@ -1,4 +1,4 @@
-import { useEffect, useContext, useState, useMemo } from 'react'
+import { useEffect, useContext, useState, useMemo, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { GlobalContext } from '../context/GlobalState'
 import useProtectedPage from '../hooks/useProtectedPage'
@@ -8,6 +8,8 @@ import CreatePostForm from '../components/CreatePostForm'
 import Loading from '../components/Loading'
 import './FeedPage.css'
 
+const POSTS_PER_PAGE = 10
+
 function FeedPage() {
   useProtectedPage()
   const navigate = useNavigate()
@@ -15,6 +17,9 @@ function FeedPage() {
   
   const [searchTerm, setSearchTerm] = useState('')
   const [sortBy, setSortBy] = useState('recent') // 'recent', 'likes', 'comments'
+  const [visiblePostsCount, setVisiblePostsCount] = useState(POSTS_PER_PAGE)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
+  const observerTarget = useRef(null)
 
   const handleLogout = () => {
     clearAuth()
@@ -24,6 +29,11 @@ function FeedPage() {
   useEffect(() => {
     getPosts()
   }, [getPosts])
+
+  // Resetar contador quando busca ou ordenação mudar
+  useEffect(() => {
+    setVisiblePostsCount(POSTS_PER_PAGE)
+  }, [searchTerm, sortBy])
 
   // Filtrar e ordenar posts
   const filteredAndSortedPosts = useMemo(() => {
@@ -57,6 +67,48 @@ function FeedPage() {
 
     return filtered
   }, [posts, searchTerm, sortBy])
+
+  // Posts visíveis (para scroll infinito)
+  const visiblePosts = useMemo(() => {
+    return filteredAndSortedPosts.slice(0, visiblePostsCount)
+  }, [filteredAndSortedPosts, visiblePostsCount])
+
+  // Carregar mais posts
+  const loadMorePosts = useCallback(() => {
+    if (isLoadingMore || visiblePostsCount >= filteredAndSortedPosts.length) {
+      return
+    }
+
+    setIsLoadingMore(true)
+    // Simular um pequeno delay para melhor UX
+    setTimeout(() => {
+      setVisiblePostsCount(prev => Math.min(prev + POSTS_PER_PAGE, filteredAndSortedPosts.length))
+      setIsLoadingMore(false)
+    }, 300)
+  }, [isLoadingMore, visiblePostsCount, filteredAndSortedPosts.length])
+
+  // Intersection Observer para detectar quando chegar ao final
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !isLoadingMore && visiblePostsCount < filteredAndSortedPosts.length) {
+          loadMorePosts()
+        }
+      },
+      { threshold: 0.1 }
+    )
+
+    const currentTarget = observerTarget.current
+    if (currentTarget) {
+      observer.observe(currentTarget)
+    }
+
+    return () => {
+      if (currentTarget) {
+        observer.unobserve(currentTarget)
+      }
+    }
+  }, [loadMorePosts, isLoadingMore, visiblePostsCount, filteredAndSortedPosts.length])
 
   return (
     <div className="feed-page">
@@ -136,9 +188,34 @@ function FeedPage() {
                 : 'Nenhum post ainda. Seja o primeiro a compartilhar!'}
             </p>
           ) : (
-            filteredAndSortedPosts.map((post) => (
-              <PostCard key={post.id} post={post} />
-            ))
+            <>
+              {visiblePosts.map((post) => (
+                <PostCard key={post.id} post={post} />
+              ))}
+              
+              {/* Elemento sentinela para scroll infinito */}
+              {visiblePostsCount < filteredAndSortedPosts.length && (
+                <div ref={observerTarget} className="scroll-sentinel">
+                  {isLoadingMore && (
+                    <div className="loading-more">
+                      <div className="loading-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                      </div>
+                      <p>Carregando mais posts...</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Mensagem quando todos os posts foram carregados */}
+              {visiblePostsCount >= filteredAndSortedPosts.length && filteredAndSortedPosts.length > POSTS_PER_PAGE && (
+                <div className="all-posts-loaded">
+                  <p>✨ Todos os posts foram carregados!</p>
+                </div>
+              )}
+            </>
           )}
         </div>
       )}
