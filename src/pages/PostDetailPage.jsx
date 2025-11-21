@@ -129,19 +129,32 @@ function PostDetailPage() {
     }
   }
 
+  const MIN_TITLE_LENGTH = 5
+  const MIN_CONTENT_LENGTH = 10
+
+  const getCharCountStatus = (current, min) => {
+    if (current === 0) return 'empty'
+    if (current < min) return 'invalid'
+    if (current < min + 2) return 'warning'
+    return 'valid'
+  }
+
+  const titleStatus = getCharCountStatus(editForm.title.trim().length, MIN_TITLE_LENGTH)
+  const contentStatus = getCharCountStatus(editForm.content.trim().length, MIN_CONTENT_LENGTH)
+
   const validateEditForm = () => {
     const errors = {}
 
     if (!editForm.title.trim()) {
       errors.title = 'Título é obrigatório'
-    } else if (editForm.title.trim().length < 5) {
-      errors.title = 'Título deve ter pelo menos 5 caracteres'
+    } else if (editForm.title.trim().length < MIN_TITLE_LENGTH) {
+      errors.title = `Título deve ter pelo menos ${MIN_TITLE_LENGTH} caracteres`
     }
 
     if (!editForm.content.trim()) {
       errors.content = 'Conteúdo é obrigatório'
-    } else if (editForm.content.trim().length < 10) {
-      errors.content = 'Conteúdo deve ter pelo menos 10 caracteres'
+    } else if (editForm.content.trim().length < MIN_CONTENT_LENGTH) {
+      errors.content = `Conteúdo deve ter pelo menos ${MIN_CONTENT_LENGTH} caracteres`
     }
 
     setFieldErrors(errors)
@@ -264,6 +277,10 @@ function PostDetailPage() {
                 required
                 className={fieldErrors.title ? 'input-error' : ''}
               />
+              <div className={`char-counter char-counter-${titleStatus}`}>
+                {editForm.title.trim().length}/{MIN_TITLE_LENGTH} caracteres mínimos
+                {titleStatus === 'valid' && ' ✓'}
+              </div>
               {fieldErrors.title && <span className="field-error">{fieldErrors.title}</span>}
             </div>
 
@@ -278,6 +295,10 @@ function PostDetailPage() {
                 required
                 className={fieldErrors.content ? 'input-error' : ''}
               />
+              <div className={`char-counter char-counter-${contentStatus}`}>
+                {editForm.content.trim().length}/{MIN_CONTENT_LENGTH} caracteres mínimos
+                {contentStatus === 'valid' && ' ✓'}
+              </div>
               {fieldErrors.content && <span className="field-error">{fieldErrors.content}</span>}
             </div>
 

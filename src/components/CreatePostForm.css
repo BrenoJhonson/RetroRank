@@ -75,6 +75,31 @@
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
+.char-counter {
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  transition: color 0.3s;
+}
+
+.char-counter-empty {
+  color: var(--retro-blue);
+  opacity: 0.7;
+}
+
+.char-counter-invalid {
+  color: var(--retro-accent);
+}
+
+.char-counter-warning {
+  color: #ffa726;
+}
+
+.char-counter-valid {
+  color: var(--retro-accent-secondary);
+  font-weight: 600;
+}
+
 .form-group textarea {
   resize: vertical;
   min-height: 100px;

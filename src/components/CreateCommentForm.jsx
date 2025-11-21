@@ -13,13 +13,24 @@ function CreateCommentForm() {
   const [error, setError] = useState('')
   const [fieldErrors, setFieldErrors] = useState({})
 
+  const MIN_CONTENT_LENGTH = 3
+
+  const getCharCountStatus = (current, min) => {
+    if (current === 0) return 'empty'
+    if (current < min) return 'invalid'
+    if (current < min + 2) return 'warning'
+    return 'valid'
+  }
+
+  const contentStatus = getCharCountStatus(form.content.trim().length, MIN_CONTENT_LENGTH)
+
   const validateForm = () => {
     const errors = {}
     
     if (!form.content.trim()) {
       errors.content = 'O comentário não pode estar vazio'
-    } else if (form.content.trim().length < 3) {
-      errors.content = 'Comentário deve ter pelo menos 3 caracteres'
+    } else if (form.content.trim().length < MIN_CONTENT_LENGTH) {
+      errors.content = `Comentário deve ter pelo menos ${MIN_CONTENT_LENGTH} caracteres`
     }
     
     setFieldErrors(errors)
@@ -63,6 +74,10 @@ function CreateCommentForm() {
             required
             className={fieldErrors.content ? 'input-error' : ''}
           />
+          <div className={`char-counter char-counter-${contentStatus}`}>
+            {form.content.trim().length}/{MIN_CONTENT_LENGTH} caracteres mínimos
+            {contentStatus === 'valid' && ' ✓'}
+          </div>
           {fieldErrors.content && <span className="field-error">{fieldErrors.content}</span>}
         </div>
 
