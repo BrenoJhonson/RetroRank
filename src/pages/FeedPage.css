@@ -155,6 +155,17 @@
   text-align: center;
   opacity: 0.9;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.search-status {
+  color: var(--retro-blue);
+  font-size: 0.85rem;
+  font-style: italic;
+  opacity: 0.8;
 }
 
 .posts-container {

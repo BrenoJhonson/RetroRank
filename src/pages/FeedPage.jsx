@@ -2,6 +2,7 @@ import { useEffect, useContext, useState, useMemo, useRef, useCallback } from 'r
 import { useNavigate } from 'react-router-dom'
 import { GlobalContext } from '../context/GlobalState'
 import useProtectedPage from '../hooks/useProtectedPage'
+import useDebounce from '../hooks/useDebounce'
 import { clearAuth } from '../utils/auth'
 import PostCard from '../components/PostCard'
 import CreatePostForm from '../components/CreatePostForm'
@@ -9,6 +10,7 @@ import Loading from '../components/Loading'
 import './FeedPage.css'
 
 const POSTS_PER_PAGE = 10
+const SEARCH_DEBOUNCE_DELAY = 300
 
 function FeedPage() {
   useProtectedPage()
@@ -16,6 +18,7 @@ function FeedPage() {
   const { posts, getPosts, isLoading, error } = useContext(GlobalContext)
   
   const [searchTerm, setSearchTerm] = useState('')
+  const debouncedSearchTerm = useDebounce(searchTerm, SEARCH_DEBOUNCE_DELAY)
   const [sortBy, setSortBy] = useState('recent') // 'recent', 'likes', 'comments'
   const [visiblePostsCount, setVisiblePostsCount] = useState(POSTS_PER_PAGE)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
@@ -33,15 +36,15 @@ function FeedPage() {
   // Resetar contador quando busca ou ordenação mudar
   useEffect(() => {
     setVisiblePostsCount(POSTS_PER_PAGE)
-  }, [searchTerm, sortBy])
+  }, [debouncedSearchTerm, sortBy])
 
-  // Filtrar e ordenar posts
+  // Filtrar e ordenar posts usando o termo de busca debounced
   const filteredAndSortedPosts = useMemo(() => {
     let filtered = [...posts]
 
-    // Filtro por busca (título, conteúdo ou autor)
-    if (searchTerm.trim()) {
-      const searchLower = searchTerm.toLowerCase()
+    // Filtro por busca (título, conteúdo ou autor) usando debouncedSearchTerm
+    if (debouncedSearchTerm.trim()) {
+      const searchLower = debouncedSearchTerm.toLowerCase()
       filtered = filtered.filter(post => 
         post.title?.toLowerCase().includes(searchLower) ||
         post.content?.toLowerCase().includes(searchLower) ||
@@ -66,7 +69,7 @@ function FeedPage() {
     })
 
     return filtered
-  }, [posts, searchTerm, sortBy])
+  }, [posts, debouncedSearchTerm, sortBy])
 
   // Posts visíveis (para scroll infinito)
   const visiblePosts = useMemo(() => {
@@ -170,9 +173,12 @@ function FeedPage() {
             )}
           </div>
 
-          {filteredAndSortedPosts.length !== posts.length && (
+          {debouncedSearchTerm && filteredAndSortedPosts.length !== posts.length && (
             <p className="filter-results" aria-live="polite" aria-atomic="true">
               Mostrando {filteredAndSortedPosts.length} de {posts.length} posts
+              {searchTerm !== debouncedSearchTerm && (
+                <span className="search-status"> (buscando...)</span>
+              )}
             </p>
           )}
         </div>
@@ -195,7 +201,7 @@ function FeedPage() {
         <div className="posts-container">
           {filteredAndSortedPosts.length === 0 ? (
             <p className="no-posts">
-              {searchTerm
+              {debouncedSearchTerm
                 ? 'Nenhum post encontrado com a busca aplicada.'
                 : 'Nenhum post ainda. Seja o primeiro a compartilhar!'}
             </p>
