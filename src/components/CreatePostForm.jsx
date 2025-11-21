@@ -1,10 +1,12 @@
 import { useState, useContext } from 'react'
 import { GlobalContext } from '../context/GlobalState'
+import { useToast } from '../context/ToastContext'
 import useForm from '../hooks/useForm'
 import './CreatePostForm.css'
 
 function CreatePostForm() {
   const { createPost, isLoading } = useContext(GlobalContext)
+  const { showSuccess, showError } = useToast()
   const [form, handleInputChange, resetForm] = useForm({ 
     title: '', 
     content: '' 
@@ -43,8 +45,11 @@ function CreatePostForm() {
     try {
       await createPost(form)
       resetForm()
+      showSuccess('Post criado com sucesso!')
     } catch (err) {
-      setError(err.message || 'Erro ao criar post. Tente novamente.')
+      const errorMessage = err.message || 'Erro ao criar post. Tente novamente.'
+      setError(errorMessage)
+      showError(errorMessage)
     }
   }
 

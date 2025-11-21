@@ -1,15 +1,19 @@
 import { useContext, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { GlobalContext } from '../context/GlobalState'
+import { useToast } from '../context/ToastContext'
 import { getUserPostInteraction } from '../services/api'
 import { getCurrentUserId } from '../utils/auth'
+import ConfirmDialog from './ConfirmDialog'
 import './PostCard.css'
 
 function PostCard({ post }) {
   const navigate = useNavigate()
   const { likePost, getPosts, deletePost } = useContext(GlobalContext)
+  const { showSuccess, showError } = useToast()
   const [userInteraction, setUserInteraction] = useState(null)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false)
   const currentUserId = getCurrentUserId()
   const isOwner = post.creatorId === currentUserId
 
@@ -48,47 +52,47 @@ function PostCard({ post }) {
     }
   }
 
-  const handleDelete = async (event) => {
+  const handleDeleteClick = (event) => {
     event.stopPropagation()
-    
-    const confirmed = window.confirm(
-      '⚠️ ATENÇÃO!\n\n' +
-      'Tem certeza que deseja excluir este post?\n\n' +
-      'Esta ação não pode ser desfeita e todos os comentários serão removidos permanentemente.'
-    )
-    
-    if (!confirmed) {
-      return
-    }
+    setShowConfirmDialog(true)
+  }
 
+  const handleConfirmDelete = async () => {
+    setShowConfirmDialog(false)
     setIsDeleting(true)
     try {
       await deletePost(post.id)
       await getPosts()
+      showSuccess('Post excluído com sucesso!')
     } catch (error) {
       console.error('Erro ao deletar post:', error)
-      alert(error.message || 'Erro ao deletar post. Tente novamente.')
+      showError(error.message || 'Erro ao deletar post. Tente novamente.')
     } finally {
       setIsDeleting(false)
     }
   }
 
+  const handleCancelDelete = () => {
+    setShowConfirmDialog(false)
+  }
+
   return (
-    <div className="post-card" onClick={handleCardClick}>
-      <div className="post-header">
-        <p className="post-author">Por: {post.creatorName}</p>
-        {isOwner && (
-          <button
-            className="delete-post-button"
-            onClick={handleDelete}
-            type="button"
-            disabled={isDeleting}
-            title="Excluir post"
-          >
-            {isDeleting ? 'Excluindo...' : 'Delete'}
-          </button>
-        )}
-      </div>
+    <>
+      <div className="post-card" onClick={handleCardClick}>
+        <div className="post-header">
+          <p className="post-author">Por: {post.creatorName}</p>
+          {isOwner && (
+            <button
+              className="delete-post-button"
+              onClick={handleDeleteClick}
+              type="button"
+              disabled={isDeleting}
+              title="Excluir post"
+            >
+              {isDeleting ? 'Excluindo...' : 'Delete'}
+            </button>
+          )}
+        </div>
       <div className="post-content">
         <h3>{post.title || 'Sem título'}</h3>
         <p>{post.content}</p>
@@ -115,6 +119,22 @@ function PostCard({ post }) {
         </p>
       </div>
     </div>
+
+    <ConfirmDialog
+      isOpen={showConfirmDialog}
+      title="Excluir Post"
+      message={`⚠️ ATENÇÃO!
+
+Tem certeza que deseja excluir este post?
+
+Esta ação não pode ser desfeita e todos os comentários serão removidos permanentemente.`}
+      onConfirm={handleConfirmDelete}
+      onCancel={handleCancelDelete}
+      confirmText="Excluir"
+      cancelText="Cancelar"
+      type="danger"
+    />
+    </>
   )
 }
 

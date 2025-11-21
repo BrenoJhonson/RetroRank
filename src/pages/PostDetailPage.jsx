@@ -1,11 +1,13 @@
 import { useEffect, useContext, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { GlobalContext } from '../context/GlobalState'
+import { useToast } from '../context/ToastContext'
 import useProtectedPage from '../hooks/useProtectedPage'
 import { getUserPostInteraction } from '../services/api'
 import { getCurrentUserId } from '../utils/auth'
 import CommentCard from '../components/CommentCard'
 import CreateCommentForm from '../components/CreateCommentForm'
+import ConfirmDialog from '../components/ConfirmDialog'
 import Loading from '../components/Loading'
 import './PostDetailPage.css'
 
@@ -14,8 +16,10 @@ function PostDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { postDetails, comments, getPostById, getComments, getPosts, likePost, deletePost, updatePost, isLoading, error } = useContext(GlobalContext)
+  const { showSuccess, showError } = useToast()
   const [userInteraction, setUserInteraction] = useState(null)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [editError, setEditError] = useState('')
   const [fieldErrors, setFieldErrors] = useState({})
@@ -74,27 +78,27 @@ function PostDetailPage() {
     }
   }
 
-  const handleDelete = async () => {
-    const confirmed = window.confirm(
-      '⚠️ ATENÇÃO!\n\n' +
-      'Tem certeza que deseja excluir este post?\n\n' +
-      'Esta ação não pode ser desfeita e todos os comentários serão removidos permanentemente.'
-    )
-    
-    if (!confirmed) {
-      return
-    }
+  const handleDeleteClick = () => {
+    setShowConfirmDialog(true)
+  }
 
+  const handleConfirmDelete = async () => {
+    setShowConfirmDialog(false)
     setIsDeleting(true)
     try {
       await deletePost(id)
+      showSuccess('Post excluído com sucesso!')
       navigate('/feed')
     } catch (error) {
       console.error('Erro ao deletar post:', error)
-      alert(error.message || 'Erro ao deletar post. Tente novamente.')
+      showError(error.message || 'Erro ao deletar post. Tente novamente.')
     } finally {
       setIsDeleting(false)
     }
+  }
+
+  const handleCancelDelete = () => {
+    setShowConfirmDialog(false)
   }
 
   const handleEdit = () => {
@@ -157,9 +161,11 @@ function PostDetailPage() {
       await getPostById(id)
       await getPosts()
       setIsEditing(false)
+      showSuccess('Post editado com sucesso!')
     } catch (error) {
       console.error('Erro ao editar post:', error)
       setEditError(error.message || 'Erro ao editar post. Tente novamente.')
+      showError(error.message || 'Erro ao editar post. Tente novamente.')
     }
   }
 
@@ -222,7 +228,7 @@ function PostDetailPage() {
               </button>
               <button
                 className="delete-post-button"
-                onClick={handleDelete}
+                onClick={handleDeleteClick}
                 type="button"
                 disabled={isDeleting}
                 title="Excluir post"
@@ -314,6 +320,21 @@ function PostDetailPage() {
           </div>
         )}
       </div>
+
+      <ConfirmDialog
+        isOpen={showConfirmDialog}
+        title="Excluir Post"
+        message={`⚠️ ATENÇÃO!
+
+Tem certeza que deseja excluir este post?
+
+Esta ação não pode ser desfeita e todos os comentários serão removidos permanentemente.`}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+        confirmText="Excluir"
+        cancelText="Cancelar"
+        type="danger"
+      />
     </div>
   )
 }

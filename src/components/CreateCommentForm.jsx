@@ -1,12 +1,14 @@
 import { useState, useContext } from 'react'
 import { useParams } from 'react-router-dom'
 import { GlobalContext } from '../context/GlobalState'
+import { useToast } from '../context/ToastContext'
 import useForm from '../hooks/useForm'
 import './CreateCommentForm.css'
 
 function CreateCommentForm() {
   const { id: postId } = useParams()
   const { createComment, getComments, isLoading } = useContext(GlobalContext)
+  const { showSuccess, showError } = useToast()
   const [form, handleInputChange, resetForm] = useForm({ content: '' })
   const [error, setError] = useState('')
   const [fieldErrors, setFieldErrors] = useState({})
@@ -38,8 +40,11 @@ function CreateCommentForm() {
       resetForm()
       // Recarregar comentários
       await getComments(postId)
+      showSuccess('Comentário adicionado com sucesso!')
     } catch (err) {
-      setError(err.message || 'Erro ao criar comentário. Tente novamente.')
+      const errorMessage = err.message || 'Erro ao criar comentário. Tente novamente.'
+      setError(errorMessage)
+      showError(errorMessage)
     }
   }
 
