@@ -426,8 +426,8 @@ function PostDetailPage() {
           <p className="no-comments">Nenhum comentário ainda. Seja o primeiro a comentar!</p>
         ) : (
           <div className="comments-list">
-            {comments.map((comment) => (
-              <CommentCard key={comment.id} comment={comment} />
+            {comments.map((comment, index) => (
+              <CommentCard key={comment.id} comment={comment} index={index} />
             ))}
           </div>
         )}

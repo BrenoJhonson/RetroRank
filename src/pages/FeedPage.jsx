@@ -207,8 +207,8 @@ function FeedPage() {
             </p>
           ) : (
             <>
-              {visiblePosts.map((post) => (
-                <PostCard key={post.id} post={post} />
+              {visiblePosts.map((post, index) => (
+                <PostCard key={post.id} post={post} index={index} />
               ))}
               
               {/* Elemento sentinela para scroll infinito */}

@@ -14,6 +14,11 @@
   backdrop-filter: blur(10px);
   position: relative;
   z-index: 10000;
+  transition: all 0.3s ease;
+}
+
+.toast.exiting {
+  animation: slideOut 0.3s ease-in forwards;
 }
 
 @keyframes slideIn {
@@ -24,6 +29,17 @@
   to {
     transform: translateX(0);
     opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
   }
 }
 

@@ -247,6 +247,7 @@
   border-radius: 50%;
   animation: pulse-dot 1.4s ease-in-out infinite;
   box-shadow: 0 0 8px rgba(78, 205, 196, 0.5);
+  transition: all 0.3s ease;
 }
 
 .loading-dots span:nth-child(1) {

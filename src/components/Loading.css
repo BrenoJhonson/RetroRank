@@ -24,6 +24,14 @@
     0 0 16px var(--retro-accent-secondary);
   animation: pulse 1.4s ease-in-out infinite;
   border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.pixel-dot:hover {
+  transform: scale(1.2);
+  box-shadow: 
+    0 0 12px var(--retro-accent),
+    0 0 24px var(--retro-accent-secondary);
 }
 
 .pixel-dot:nth-child(1) {

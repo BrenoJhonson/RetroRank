@@ -7,7 +7,7 @@ import { formatRelativeTime } from '../utils/dateFormatter'
 import ConfirmDialog from './ConfirmDialog'
 import './CommentCard.css'
 
-function CommentCard({ comment }) {
+function CommentCard({ comment, index = 0 }) {
   const { id: postId } = useParams()
   const { deleteComment, getComments } = useContext(GlobalContext)
   const { showSuccess, showError } = useToast()
@@ -48,6 +48,7 @@ function CommentCard({ comment }) {
       <article 
         className="comment-card"
         aria-label={`Comentário de ${comment.creatorName}`}
+        style={{ animationDelay: `${index * 0.08}s` }}
       >
         <div className="comment-header">
           <div className="comment-header-info">

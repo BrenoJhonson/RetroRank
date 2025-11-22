@@ -8,7 +8,7 @@ import { formatRelativeTime } from '../utils/dateFormatter'
 import ConfirmDialog from './ConfirmDialog'
 import './PostCard.css'
 
-function PostCard({ post }) {
+function PostCard({ post, index = 0 }) {
   const navigate = useNavigate()
   const { likePost, getPosts, deletePost } = useContext(GlobalContext)
   const { showSuccess, showError } = useToast()
@@ -93,6 +93,7 @@ function PostCard({ post }) {
         tabIndex={0}
         role="article"
         aria-label={`Post: ${post.title || 'Sem título'} por ${post.creatorName}`}
+        style={{ animationDelay: `${index * 0.1}s` }}
       >
         <div className="post-header">
           <div className="post-header-info">
