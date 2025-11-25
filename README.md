@@ -26,13 +26,19 @@ O RetroRank é uma plataforma onde usuários podem compartilhar suas experiênci
 ### 📝 Posts
 - **Feed**: Visualização de todos os posts da comunidade
 - **Criar Post**: Formulário para criar novos posts com título e conteúdo
+- **Editar Post**: Edição de posts pelo autor (título e conteúdo)
+- **Excluir Post**: Exclusão de posts pelo autor com confirmação
 - **Detalhes do Post**: Página dedicada com informações completas do post
 - **Like/Dislike**: Sistema de interação único (um usuário pode dar like OU dislike por post)
 - **Contagem de Comentários**: Exibição do número de comentários em cada post
+- **Busca e Filtros**: Busca por título, conteúdo ou autor com debounce
+- **Ordenação**: Ordenar por mais recentes, mais curtidos ou mais comentados
+- **Scroll Infinito**: Carregamento progressivo de posts ao rolar a página
 
 ### 💬 Comentários
 - **Listagem**: Visualização de todos os comentários de um post
 - **Criar Comentário**: Adicionar comentários em posts
+- **Excluir Comentário**: Exclusão de comentários pelo autor com confirmação
 - **Autor**: Exibição do nome do autor de cada comentário
 
 ### 🎨 Interface
@@ -41,6 +47,12 @@ O RetroRank é uma plataforma onde usuários podem compartilhar suas experiênci
 - **Loading States**: Indicadores visuais durante carregamento
 - **Tratamento de Erros**: Mensagens de erro amigáveis com opção de retry
 - **Validação de Formulários**: Validação client-side com feedback visual
+- **Toast Notifications**: Sistema de notificações toast para feedback de ações
+- **Confirmação de Ações**: Diálogos de confirmação para ações destrutivas
+- **Animações e Transições**: Animações suaves de entrada e transições em elementos
+- **Formatação de Datas**: Tempo relativo ("há X tempo") com tooltip de data completa
+- **Contadores de Caracteres**: Feedback visual de contagem de caracteres em formulários
+- **Acessibilidade (A11y)**: ARIA attributes, navegação por teclado, HTML semântico
 
 ## 📦 Instalação
 
@@ -77,12 +89,14 @@ RetroRank/
 ├── src/
 │   ├── components/          # Componentes reutilizáveis
 │   │   ├── CommentCard.jsx
+│   │   ├── ConfirmDialog.jsx
 │   │   ├── CreateCommentForm.jsx
 │   │   ├── CreatePostForm.jsx
 │   │   ├── Footer.jsx
 │   │   ├── Header.jsx
 │   │   ├── Loading.jsx
-│   │   └── PostCard.jsx
+│   │   ├── PostCard.jsx
+│   │   └── Toast.jsx
 │   ├── pages/               # Páginas da aplicação
 │   │   ├── FeedPage.jsx
 │   │   ├── HomePage.jsx
@@ -90,15 +104,17 @@ RetroRank/
 │   │   ├── PostDetailPage.jsx
 │   │   └── SignUpPage.jsx
 │   ├── hooks/               # Custom Hooks
+│   │   ├── useDebounce.js
 │   │   ├── useForm.js
-│   │   ├── useProtectedPage.js
-│   │   └── useRequestData.js
+│   │   └── useProtectedPage.js
 │   ├── context/             # Context API
-│   │   └── GlobalState.jsx
+│   │   ├── GlobalState.jsx
+│   │   └── ToastContext.jsx
 │   ├── services/            # API Mockada
 │   │   └── api.js
 │   ├── utils/               # Funções utilitárias
-│   │   └── auth.js
+│   │   ├── auth.js
+│   │   └── dateFormatter.js
 │   ├── constants/           # Constantes
 │   │   └── constants.js
 │   ├── App.jsx              # Componente principal
@@ -134,10 +150,13 @@ RetroRank/
 ### Usar o Feed
 
 1. Visualize todos os posts da comunidade
-2. Clique em um post para ver detalhes e comentários
-3. Use os botões 👍 (like) ou 👎 (dislike) para interagir
-4. Crie novos posts usando o formulário no topo do Feed
-5. Use o botão "Sair" para fazer logout
+2. Use a barra de busca para filtrar posts por título, conteúdo ou autor
+3. Selecione a ordenação desejada (Mais recentes, Mais curtidos, Mais comentados)
+4. Clique em um post para ver detalhes e comentários
+5. Use os botões "Gostei" ou "Não Gostei" para interagir
+6. Crie novos posts usando o formulário no topo do Feed
+7. Role a página para carregar mais posts automaticamente (scroll infinito)
+8. Use o botão "Sair" para fazer logout
 
 ### Comentar em Posts
 
@@ -145,6 +164,18 @@ RetroRank/
 2. Role até a seção de comentários
 3. Digite seu comentário (mínimo 3 caracteres)
 4. Clique em "Comentar"
+
+### Editar e Excluir Posts
+
+1. Abra um post que você criou
+2. Clique no botão "Editar" para modificar título e conteúdo
+3. Salve as alterações ou cancele a edição
+4. Clique no botão "Delete" para excluir o post (com confirmação)
+
+### Excluir Comentários
+
+1. Em qualquer comentário que você criou, clique no botão "Delete"
+2. Confirme a exclusão no diálogo de confirmação
 
 ## 🔧 Custom Hooks
 
@@ -168,8 +199,12 @@ function FeedPage() {
 }
 ```
 
-### `useRequestData`
-Encapsula lógica de requisições HTTP (não utilizado no projeto atual, mas disponível).
+### `useDebounce`
+Otimiza performance ao atrasar a execução de funções até que o usuário pare de digitar.
+
+```javascript
+const debouncedValue = useDebounce(searchTerm, 300)
+```
 
 ## 🌐 Rotas
 
@@ -198,6 +233,10 @@ O projeto utiliza um tema retro inspirado em jogos 8-bit:
 - Gradientes e sombras para profundidade
 - Tipografia legível com contraste adequado
 - Animações suaves para feedback visual
+- Animações de entrada escalonadas para posts e comentários
+- Transições suaves em hover e interações
+- Efeitos ripple em botões
+- Animações de loading aprimoradas
 
 ## 📱 Responsividade
 
@@ -231,11 +270,27 @@ npm run preview
 - Senha: obrigatória, mínimo 6 caracteres
 
 ### Criar Post
-- Título: obrigatório, mínimo 5 caracteres
-- Conteúdo: obrigatório, mínimo 10 caracteres
+- Título: obrigatório, mínimo 5 caracteres (com contador visual)
+- Conteúdo: obrigatório, mínimo 10 caracteres (com contador visual)
+
+### Editar Post
+- Título: obrigatório, mínimo 5 caracteres (com contador visual)
+- Conteúdo: obrigatório, mínimo 10 caracteres (com contador visual)
 
 ### Criar Comentário
-- Conteúdo: obrigatório, mínimo 3 caracteres
+- Conteúdo: obrigatório, mínimo 3 caracteres (com contador visual)
+
+## ♿ Acessibilidade
+
+O projeto foi desenvolvido com foco em acessibilidade:
+
+- **ARIA Attributes**: Labels, descrições e estados para screen readers
+- **Navegação por Teclado**: Todos os elementos interativos são acessíveis via teclado
+- **HTML Semântico**: Uso de `<main>`, `<article>`, `<section>`, `<header>`, `<time>`
+- **Focus Visible**: Indicadores visuais claros para navegação por teclado
+- **Screen Reader Support**: Textos alternativos e descrições para leitores de tela
+- **Contraste**: Cores com contraste adequado para leitura
+- **Feedback Visual**: Mensagens de erro e sucesso claramente identificadas
 
 ## 🔒 Segurança
 
@@ -243,10 +298,10 @@ npm run preview
 
 ## 📚 Conceitos Demonstrados
 
-- ✅ React Hooks (useState, useEffect, useContext, useCallback)
-- ✅ Custom Hooks
-- ✅ Context API para estado global
-- ✅ React Router DOM para navegação
+- ✅ React Hooks (useState, useEffect, useContext, useCallback, useMemo, useRef)
+- ✅ Custom Hooks (useForm, useProtectedPage, useDebounce)
+- ✅ Context API para estado global (GlobalState, ToastContext)
+- ✅ React Router DOM para navegação (useNavigate, useParams)
 - ✅ Formulários controlados
 - ✅ Proteção de rotas
 - ✅ Gerenciamento de estado
@@ -255,6 +310,14 @@ npm run preview
 - ✅ Validação de formulários
 - ✅ Responsividade
 - ✅ Persistência local (LocalStorage)
+- ✅ Debounce para otimização de performance
+- ✅ Scroll infinito com Intersection Observer
+- ✅ Sistema de notificações (Toast)
+- ✅ Diálogos de confirmação
+- ✅ Formatação de datas e tempo relativo
+- ✅ Acessibilidade (ARIA, navegação por teclado, HTML semântico)
+- ✅ Animações e transições CSS
+- ✅ Contadores de caracteres com feedback visual
 
 ## 👨‍💻 Desenvolvido por
 
